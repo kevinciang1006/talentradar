@@ -1,0 +1,74 @@
+{
+    "success": true,
+    "data": [
+        {
+            "_id": "69a053f3fbdbdd782f922925",
+            "jobId": {
+                "_id": "699d756f05e5e8441850361a",
+                "title": "Sales Development Representative"
+            },
+            "companyId": "699d756d05e5e8441850353f",
+            "talentId": {
+                "_id": "699d756f05e5e8441850356a",
+                "firstName": "Talent19",
+                "lastName": "User19",
+                "avatar": "https://api.dicebear.com/7.x/initials/svg?seed=Talent19User19",
+                "headline": "Professional Customer Support Specialist"
+            },
+            "stage": "interview",
+            "stageHistory": [
+                {
+                    "from": null,
+                    "to": "shortlisted",
+                    "changedAt": "2026-02-26T14:08:51.488Z",
+                    "changedBy": "company"
+                },
+                {
+                    "from": "screening",
+                    "to": "screening",
+                    "changedAt": "2026-02-26T14:47:25.068Z",
+                    "changedBy": "company"
+                },
+                {
+                    "from": "interview",
+                    "to": "interview",
+                    "changedAt": "2026-02-26T14:56:05.248Z",
+                    "changedBy": "company"
+                }
+            ],
+            "notes": [
+                {
+                    "content": "Test note",
+                    "createdAt": "2026-02-26T14:47:19.743Z",
+                    "stage": "shortlisted",
+                    "authorType": "company",
+                    "authorId": "699d756d05e5e8441850353f"
+                },
+                {
+                    "content": "Moved to screening",
+                    "createdAt": "2026-02-26T14:47:44.945Z",
+                    "stage": "screening",
+                    "authorType": "company",
+                    "authorId": "699d756d05e5e8441850353f"
+                }
+            ],
+            "createdAt": "2026-02-26T14:08:51.492Z",
+            "updatedAt": "2026-02-26T14:59:58.464Z",
+            "__v": 4,
+            "screeningTask": {
+                "title": "Organize this calendar",
+                "description": "Desc",
+                "dueDate": "2026-03-05T15:00:00.000Z",
+                "status": "sent",
+                "createdAt": "2026-02-26T14:54:32.662Z"
+            },
+            "interview": {
+                "scheduledAt": "2026-03-12T10:00:00.000Z",
+                "candidateTimezone": "America/New_York",
+                "meetingLink": "https://zoom.us/123",
+                "status": "scheduled",
+                "notes": "Looking forward to meeting you!"
+            }
+        }
+    ]
+}

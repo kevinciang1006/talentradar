@@ -1,0 +1,66 @@
+{
+    "success": true,
+    "data": {
+        "entries": [
+            {
+                "_id": "69a053f3fbdbdd782f922925",
+                "jobId": "699d756f05e5e8441850361a",
+                "companyId": "699d756d05e5e8441850353f",
+                "talentId": {
+                    "_id": "699d756f05e5e8441850356a",
+                    "firstName": "Talent19",
+                    "lastName": "User19",
+                    "avatar": "https://api.dicebear.com/7.x/initials/svg?seed=Talent19User19",
+                    "headline": "Professional Customer Support Specialist",
+                    "region": "latin_america",
+                    "hourlyRate": 12,
+                    "englishProficiency": "fluent"
+                },
+                "stage": "shortlisted",
+                "stageHistory": [
+                    {
+                        "from": null,
+                        "to": "shortlisted",
+                        "changedAt": "2026-02-26T14:08:51.488Z",
+                        "changedBy": "company"
+                    }
+                ],
+                "notes": [],
+                "createdAt": "2026-02-26T14:08:51.492Z",
+                "updatedAt": "2026-02-26T14:08:51.492Z",
+                "__v": 0
+            },
+            {
+                "_id": "699ea304b14a83d702d7f4a6",
+                "jobId": "699d756f05e5e8441850361a",
+                "companyId": "699d756d05e5e8441850353f",
+                "talentId": {
+                    "_id": "699d756f05e5e84418503569",
+                    "firstName": "Talent18",
+                    "lastName": "User18",
+                    "avatar": "https://api.dicebear.com/7.x/initials/svg?seed=Talent18User18",
+                    "headline": "Professional Administrative Specialist",
+                    "region": "latin_america",
+                    "hourlyRate": 8,
+                    "englishProficiency": "fluent"
+                },
+                "stage": "shortlisted",
+                "stageHistory": [
+                    {
+                        "from": null,
+                        "to": "shortlisted",
+                        "changedAt": "2026-02-25T07:21:40.986Z",
+                        "changedBy": "company"
+                    }
+                ],
+                "notes": [],
+                "createdAt": "2026-02-25T07:21:41.004Z",
+                "updatedAt": "2026-02-25T07:21:41.004Z",
+                "__v": 0
+            }
+        ],
+        "stageCounts": {
+            "shortlisted": 2
+        }
+    }
+}

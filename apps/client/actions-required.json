@@ -1,0 +1,91 @@
+{
+    "success": true,
+    "data": [
+        {
+            "_id": "69a2d4a022692e4adc655e6a",
+            "jobId": {
+                "_id": "69a2d42ed93c4152d2262f44",
+                "title": "Sales Development Representative"
+            },
+            "companyId": {
+                "_id": "69a2d42dd93c4152d2262e73",
+                "name": "Acme Corp",
+                "email": "demo@example.com"
+            },
+            "talentId": {
+                "_id": "69a2d42ed93c4152d2262e8b",
+                "firstName": "Talent10",
+                "lastName": "User10",
+                "email": "talent10@example.com",
+                "avatar": "https://api.dicebear.com/7.x/initials/svg?seed=Talent10User10"
+            },
+            "stage": "offer",
+            "stageHistory": [
+                {
+                    "from": null,
+                    "to": "shortlisted",
+                    "changedAt": "2026-02-28T11:42:24.598Z",
+                    "changedBy": "company"
+                },
+                {
+                    "from": "screening",
+                    "to": "screening",
+                    "changedAt": "2026-03-01T06:37:07.190Z",
+                    "changedBy": "company"
+                },
+                {
+                    "from": "interview",
+                    "to": "interview",
+                    "changedAt": "2026-03-01T06:38:06.201Z",
+                    "changedBy": "company"
+                },
+                {
+                    "from": "offer",
+                    "to": "offer",
+                    "changedAt": "2026-03-01T06:39:42.395Z",
+                    "changedBy": "company"
+                }
+            ],
+            "notes": [
+                {
+                    "content": "Interview went well",
+                    "createdAt": "2026-03-01T06:39:30.205Z",
+                    "stage": "interview",
+                    "authorType": "company",
+                    "authorId": "69a2d42dd93c4152d2262e73"
+                }
+            ],
+            "timeline": [],
+            "createdAt": "2026-02-28T11:42:24.599Z",
+            "updatedAt": "2026-03-01T06:40:30.568Z",
+            "__v": 4,
+            "screeningTask": {
+                "title": "Please do this task",
+                "description": "Hello",
+                "dueDate": "2026-03-03T07:00:00.000Z",
+                "status": "sent",
+                "taskLink": "https://forms.gle",
+                "submissionLink": "",
+                "createdAt": "2026-03-01T06:37:45.488Z"
+            },
+            "interview": {
+                "scheduledAt": "2026-03-08T06:38:00.000Z",
+                "candidateTimezone": "America/New_York",
+                "meetingLink": "https://zoom.us/123",
+                "status": "completed",
+                "notes": "Looking forward to meet you",
+                "completedAt": "2026-03-01T06:39:32.929Z"
+            },
+            "offer": {
+                "rate": 8,
+                "hoursPerWeek": 40,
+                "type": "full_time",
+                "startDate": "2026-03-10T06:40:00.000Z",
+                "message": "Hi, we are impressed",
+                "status": "sent",
+                "sentAt": "2026-03-01T06:40:30.565Z",
+                "approvedByAdmin": false
+            }
+        }
+    ]
+}

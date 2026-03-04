@@ -1,0 +1,19 @@
+{
+  "name": "talentradar",
+  "private": true,
+  "packageManager": "npm@10.9.2",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "turbo build",
+    "dev": "turbo dev",
+    "lint": "turbo lint",
+    "test": "turbo test",
+    "install-all": "npm install"
+  },
+  "devDependencies": {
+    "turbo": "^2.8.12"
+  }
+}

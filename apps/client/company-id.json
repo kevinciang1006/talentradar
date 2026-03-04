@@ -1,0 +1,622 @@
+{
+    "success": true,
+    "data": {
+        "company": {
+            "_id": "69a400eae873c02b1b9323bd",
+            "name": "Acme Corp",
+            "email": "demo@example.com",
+            "size": "11-50",
+            "monthlyRevenue": "50k-100k",
+            "createdAt": "2026-03-01T09:03:38.433Z",
+            "updatedAt": "2026-03-01T09:03:38.433Z",
+            "__v": 0
+        },
+        "jobs": [
+            {
+                "_id": "69a400ebe873c02b1b93248f",
+                "companyId": "69a400eae873c02b1b9323bd",
+                "title": "Social Media Manager",
+                "roleCategory": "social_media",
+                "description": "Part-time social media manager needed to manage our Instagram and LinkedIn presence.",
+                "hourlyRateMin": 8,
+                "hourlyRateMax": 11,
+                "availability": "part_time",
+                "status": "paused",
+                "createdAt": "2026-03-01T09:03:39.713Z",
+                "updatedAt": "2026-03-01T09:03:39.713Z",
+                "__v": 0
+            },
+            {
+                "_id": "69a400ebe873c02b1b93248e",
+                "companyId": "69a400eae873c02b1b9323bd",
+                "title": "Sales Development Representative",
+                "roleCategory": "sales",
+                "description": "Looking for a motivated SDR to generate leads, qualify prospects, and set appointments for our sales team.",
+                "hourlyRateMin": 8,
+                "hourlyRateMax": 12,
+                "availability": "full_time",
+                "status": "open",
+                "createdAt": "2026-03-01T09:03:39.713Z",
+                "updatedAt": "2026-03-01T09:03:39.713Z",
+                "__v": 0
+            },
+            {
+                "_id": "69a400ebe873c02b1b93248d",
+                "companyId": "69a400eae873c02b1b9323bd",
+                "title": "Administrative Assistant",
+                "roleCategory": "administrative",
+                "description": "We are seeking an experienced administrative assistant to support our executive team with calendar management, email correspondence, and travel coordination.",
+                "requirements": "Minimum 3 years experience, excellent English skills, proficiency in Google Workspace",
+                "hourlyRateMin": 7,
+                "hourlyRateMax": 10,
+                "availability": "full_time",
+                "status": "open",
+                "createdAt": "2026-03-01T09:03:39.713Z",
+                "updatedAt": "2026-03-01T09:03:39.713Z",
+                "__v": 0
+            }
+        ],
+        "pipelineActivity": [
+            {
+                "_id": "69a400ebe873c02b1b932499",
+                "jobId": {
+                    "_id": "69a400ebe873c02b1b93248d",
+                    "title": "Administrative Assistant"
+                },
+                "companyId": "69a400eae873c02b1b9323bd",
+                "talentId": {
+                    "_id": "69a400ebe873c02b1b9323c7",
+                    "firstName": "Angela",
+                    "lastName": "Reyes"
+                },
+                "stage": "interview",
+                "stageHistory": [
+                    {
+                        "from": null,
+                        "to": "shortlisted",
+                        "changedAt": "2024-12-01T00:00:00.000Z",
+                        "changedBy": "company"
+                    },
+                    {
+                        "from": "shortlisted",
+                        "to": "screening",
+                        "changedAt": "2024-12-05T00:00:00.000Z",
+                        "changedBy": "company"
+                    },
+                    {
+                        "from": "interview",
+                        "to": "interview",
+                        "changedAt": "2026-03-01T12:44:33.623Z",
+                        "changedBy": "company"
+                    }
+                ],
+                "notes": [],
+                "screeningTask": {
+                    "title": "Calendar Management Test",
+                    "description": "Please complete the attached calendar management scenario",
+                    "dueDate": "2024-12-20T00:00:00.000Z",
+                    "status": "submitted",
+                    "createdAt": "2024-12-05T00:00:00.000Z"
+                },
+                "timeline": [],
+                "createdAt": "2026-03-01T09:03:39.719Z",
+                "updatedAt": "2026-03-01T12:44:33.625Z",
+                "__v": 1
+            },
+            {
+                "_id": "69a400ebe873c02b1b932498",
+                "jobId": {
+                    "_id": "69a400ebe873c02b1b93248d",
+                    "title": "Administrative Assistant"
+                },
+                "companyId": "69a400eae873c02b1b9323bd",
+                "talentId": {
+                    "_id": "69a400ebe873c02b1b9323c6",
+                    "firstName": "Carlos",
+                    "lastName": "Mendez"
+                },
+                "stage": "screening",
+                "stageHistory": [
+                    {
+                        "from": null,
+                        "to": "shortlisted",
+                        "changedAt": "2026-03-01T09:03:39.714Z",
+                        "changedBy": "company"
+                    },
+                    {
+                        "from": "screening",
+                        "to": "screening",
+                        "changedAt": "2026-03-01T09:09:46.420Z",
+                        "changedBy": "company"
+                    }
+                ],
+                "notes": [],
+                "timeline": [],
+                "createdAt": "2026-03-01T09:03:39.719Z",
+                "updatedAt": "2026-03-01T09:09:46.423Z",
+                "__v": 1
+            },
+            {
+                "_id": "69a400ebe873c02b1b93249a",
+                "jobId": {
+                    "_id": "69a400ebe873c02b1b93248d",
+                    "title": "Administrative Assistant"
+                },
+                "companyId": "69a400eae873c02b1b9323bd",
+                "talentId": {
+                    "_id": "69a400ebe873c02b1b9323c8",
+                    "firstName": "Thabo",
+                    "lastName": "Molefe"
+                },
+                "stage": "interview",
+                "stageHistory": [
+                    {
+                        "from": null,
+                        "to": "shortlisted",
+                        "changedAt": "2024-11-15T00:00:00.000Z",
+                        "changedBy": "company"
+                    },
+                    {
+                        "from": "shortlisted",
+                        "to": "screening",
+                        "changedAt": "2024-11-20T00:00:00.000Z",
+                        "changedBy": "company"
+                    },
+                    {
+                        "from": "screening",
+                        "to": "interview",
+                        "changedAt": "2024-12-01T00:00:00.000Z",
+                        "changedBy": "company"
+                    }
+                ],
+                "notes": [],
+                "interview": {
+                    "scheduledAt": "2024-12-25T15:00:00.000Z",
+                    "candidateTimezone": "America/Bogota",
+                    "meetingLink": "https://zoom.us/j/123456789",
+                    "status": "scheduled",
+                    "notes": "Video interview to assess communication skills"
+                },
+                "timeline": [],
+                "createdAt": "2026-03-01T09:03:39.719Z",
+                "updatedAt": "2026-03-01T09:03:39.719Z",
+                "__v": 0
+            },
+            {
+                "_id": "69a400ebe873c02b1b93249b",
+                "jobId": {
+                    "_id": "69a400ebe873c02b1b93248d",
+                    "title": "Administrative Assistant"
+                },
+                "companyId": "69a400eae873c02b1b9323bd",
+                "talentId": {
+                    "_id": "69a400ebe873c02b1b9323c9",
+                    "firstName": "Fatima",
+                    "lastName": "El-Sayed"
+                },
+                "stage": "offer",
+                "stageHistory": [
+                    {
+                        "from": null,
+                        "to": "shortlisted",
+                        "changedAt": "2024-11-01T00:00:00.000Z",
+                        "changedBy": "company"
+                    },
+                    {
+                        "from": "shortlisted",
+                        "to": "screening",
+                        "changedAt": "2024-11-10T00:00:00.000Z",
+                        "changedBy": "company"
+                    },
+                    {
+                        "from": "screening",
+                        "to": "interview",
+                        "changedAt": "2024-11-20T00:00:00.000Z",
+                        "changedBy": "company"
+                    },
+                    {
+                        "from": "interview",
+                        "to": "offer",
+                        "changedAt": "2024-12-01T00:00:00.000Z",
+                        "changedBy": "company"
+                    }
+                ],
+                "notes": [],
+                "offer": {
+                    "rate": 9,
+                    "hoursPerWeek": 40,
+                    "type": "full_time",
+                    "startDate": "2025-01-15T00:00:00.000Z",
+                    "message": "We are excited to offer you this position!",
+                    "status": "presented",
+                    "sentAt": "2024-12-01T00:00:00.000Z",
+                    "approvedByAdmin": false
+                },
+                "timeline": [],
+                "createdAt": "2026-03-01T09:03:39.719Z",
+                "updatedAt": "2026-03-01T09:03:39.719Z",
+                "__v": 0
+            },
+            {
+                "_id": "69a400ebe873c02b1b93249c",
+                "jobId": {
+                    "_id": "69a400ebe873c02b1b93248d",
+                    "title": "Administrative Assistant"
+                },
+                "companyId": "69a400eae873c02b1b9323bd",
+                "talentId": {
+                    "_id": "69a400ebe873c02b1b9323ca",
+                    "firstName": "Valentina",
+                    "lastName": "Herrera"
+                },
+                "stage": "finalizing",
+                "stageHistory": [
+                    {
+                        "from": null,
+                        "to": "shortlisted",
+                        "changedAt": "2024-10-01T00:00:00.000Z",
+                        "changedBy": "company"
+                    },
+                    {
+                        "from": "shortlisted",
+                        "to": "screening",
+                        "changedAt": "2024-10-10T00:00:00.000Z",
+                        "changedBy": "company"
+                    },
+                    {
+                        "from": "screening",
+                        "to": "interview",
+                        "changedAt": "2024-10-20T00:00:00.000Z",
+                        "changedBy": "company"
+                    },
+                    {
+                        "from": "interview",
+                        "to": "offer",
+                        "changedAt": "2024-11-01T00:00:00.000Z",
+                        "changedBy": "company"
+                    },
+                    {
+                        "from": "offer",
+                        "to": "finalizing",
+                        "changedAt": "2024-11-15T00:00:00.000Z",
+                        "changedBy": "admin"
+                    }
+                ],
+                "notes": [],
+                "offer": {
+                    "rate": 9,
+                    "hoursPerWeek": 40,
+                    "type": "full_time",
+                    "startDate": "2025-01-01T00:00:00.000Z",
+                    "message": "Offer accepted!",
+                    "status": "accepted",
+                    "sentAt": "2024-11-01T00:00:00.000Z",
+                    "respondedAt": "2024-11-15T00:00:00.000Z",
+                    "approvedByAdmin": false
+                },
+                "finalization": {
+                    "payment": {
+                        "status": "paid",
+                        "amount": 1440,
+                        "transactionId": "TXN123",
+                        "paidAt": "2024-11-20T00:00:00.000Z"
+                    },
+                    "contract": {
+                        "status": "sent",
+                        "clientSigned": true,
+                        "candidateSigned": false
+                    },
+                    "payroll": {
+                        "status": "in_progress",
+                        "partner": "Deel"
+                    },
+                    "compliance": {
+                        "status": "in_progress",
+                        "countryRequirementsMet": true
+                    },
+                    "csm": {
+                        "status": "pending"
+                    },
+                    "startDate": {
+                        "status": "pending"
+                    }
+                },
+                "timeline": [],
+                "createdAt": "2026-03-01T09:03:39.719Z",
+                "updatedAt": "2026-03-01T09:03:39.719Z",
+                "__v": 0
+            },
+            {
+                "rejection": {
+                    "reason": "poor_communication",
+                    "notes": "Did not respond to screening task",
+                    "rejectedAt": "2024-11-20T00:00:00.000Z",
+                    "rejectedAtStage": "screening"
+                },
+                "_id": "69a400ebe873c02b1b93249e",
+                "jobId": {
+                    "_id": "69a400ebe873c02b1b93248d",
+                    "title": "Administrative Assistant"
+                },
+                "companyId": "69a400eae873c02b1b9323bd",
+                "talentId": {
+                    "_id": "69a400ebe873c02b1b9323cc",
+                    "firstName": "Sarah",
+                    "lastName": "van der Berg"
+                },
+                "stage": "rejected",
+                "stageHistory": [
+                    {
+                        "from": null,
+                        "to": "shortlisted",
+                        "changedAt": "2024-11-01T00:00:00.000Z",
+                        "changedBy": "company"
+                    },
+                    {
+                        "from": "shortlisted",
+                        "to": "screening",
+                        "changedAt": "2024-11-10T00:00:00.000Z",
+                        "changedBy": "company"
+                    },
+                    {
+                        "from": "screening",
+                        "to": "rejected",
+                        "changedAt": "2024-11-20T00:00:00.000Z",
+                        "changedBy": "company"
+                    }
+                ],
+                "notes": [],
+                "timeline": [],
+                "createdAt": "2026-03-01T09:03:39.719Z",
+                "updatedAt": "2026-03-01T09:03:39.719Z",
+                "__v": 0
+            },
+            {
+                "_id": "69a400ebe873c02b1b93249d",
+                "jobId": {
+                    "_id": "69a400ebe873c02b1b93248d",
+                    "title": "Administrative Assistant"
+                },
+                "companyId": "69a400eae873c02b1b9323bd",
+                "talentId": {
+                    "_id": "69a400ebe873c02b1b9323cb",
+                    "firstName": "Juan",
+                    "lastName": "dela Cruz"
+                },
+                "stage": "hired",
+                "stageHistory": [
+                    {
+                        "from": null,
+                        "to": "shortlisted",
+                        "changedAt": "2024-09-01T00:00:00.000Z",
+                        "changedBy": "company"
+                    },
+                    {
+                        "from": "shortlisted",
+                        "to": "screening",
+                        "changedAt": "2024-09-10T00:00:00.000Z",
+                        "changedBy": "company"
+                    },
+                    {
+                        "from": "screening",
+                        "to": "interview",
+                        "changedAt": "2024-09-20T00:00:00.000Z",
+                        "changedBy": "company"
+                    },
+                    {
+                        "from": "interview",
+                        "to": "offer",
+                        "changedAt": "2024-10-01T00:00:00.000Z",
+                        "changedBy": "company"
+                    },
+                    {
+                        "from": "offer",
+                        "to": "finalizing",
+                        "changedAt": "2024-10-15T00:00:00.000Z",
+                        "changedBy": "admin"
+                    },
+                    {
+                        "from": "finalizing",
+                        "to": "hired",
+                        "changedAt": "2024-11-01T00:00:00.000Z",
+                        "changedBy": "admin"
+                    }
+                ],
+                "notes": [],
+                "offer": {
+                    "rate": 10,
+                    "hoursPerWeek": 40,
+                    "type": "full_time",
+                    "startDate": "2024-11-15T00:00:00.000Z",
+                    "message": "Welcome aboard!",
+                    "status": "accepted",
+                    "sentAt": "2024-10-01T00:00:00.000Z",
+                    "respondedAt": "2024-10-10T00:00:00.000Z",
+                    "approvedByAdmin": false
+                },
+                "finalization": {
+                    "payment": {
+                        "status": "paid",
+                        "amount": 1600,
+                        "transactionId": "TXN456",
+                        "paidAt": "2024-10-20T00:00:00.000Z"
+                    },
+                    "contract": {
+                        "status": "signed",
+                        "clientSigned": true,
+                        "candidateSigned": true,
+                        "signedAt": "2024-10-25T00:00:00.000Z"
+                    },
+                    "payroll": {
+                        "status": "complete",
+                        "partner": "Deel",
+                        "completedAt": "2024-10-30T00:00:00.000Z"
+                    },
+                    "compliance": {
+                        "status": "verified",
+                        "countryRequirementsMet": true,
+                        "verifiedAt": "2024-10-28T00:00:00.000Z"
+                    },
+                    "csm": {
+                        "status": "assigned",
+                        "name": "Paula Martinez",
+                        "email": "paula@remoteleverage.com",
+                        "phone": "+1234567890",
+                        "assignedAt": "2024-10-25T00:00:00.000Z"
+                    },
+                    "startDate": {
+                        "status": "confirmed",
+                        "confirmedDate": "2024-11-15T00:00:00.000Z",
+                        "confirmedAt": "2024-10-30T00:00:00.000Z"
+                    }
+                },
+                "timeline": [],
+                "createdAt": "2026-03-01T09:03:39.719Z",
+                "updatedAt": "2026-03-01T09:03:39.719Z",
+                "__v": 0
+            },
+            {
+                "_id": "69a400ebe873c02b1b932497",
+                "jobId": {
+                    "_id": "69a400ebe873c02b1b93248d",
+                    "title": "Administrative Assistant"
+                },
+                "companyId": "69a400eae873c02b1b9323bd",
+                "talentId": {
+                    "_id": "69a400ebe873c02b1b9323c5",
+                    "firstName": "Maria",
+                    "lastName": "Rodriguez"
+                },
+                "stage": "shortlisted",
+                "stageHistory": [
+                    {
+                        "from": null,
+                        "to": "shortlisted",
+                        "changedAt": "2026-03-01T09:03:39.714Z",
+                        "changedBy": "company"
+                    }
+                ],
+                "notes": [
+                    {
+                        "content": "Strong candidate, good English skills",
+                        "createdAt": "2026-03-01T09:03:39.714Z",
+                        "stage": "shortlisted",
+                        "authorType": "company",
+                        "authorId": "69a400eae873c02b1b9323bd"
+                    }
+                ],
+                "timeline": [],
+                "createdAt": "2026-03-01T09:03:39.719Z",
+                "updatedAt": "2026-03-01T09:03:39.719Z",
+                "__v": 0
+            }
+        ],
+        "hires": [
+            {
+                "_id": "69a400ebe873c02b1b93249d",
+                "jobId": {
+                    "_id": "69a400ebe873c02b1b93248d",
+                    "title": "Administrative Assistant"
+                },
+                "companyId": "69a400eae873c02b1b9323bd",
+                "talentId": {
+                    "_id": "69a400ebe873c02b1b9323cb",
+                    "firstName": "Juan",
+                    "lastName": "dela Cruz",
+                    "avatar": "https://api.dicebear.com/7.x/initials/svg?seed=Juandela Cruz"
+                },
+                "stage": "hired",
+                "stageHistory": [
+                    {
+                        "from": null,
+                        "to": "shortlisted",
+                        "changedAt": "2024-09-01T00:00:00.000Z",
+                        "changedBy": "company"
+                    },
+                    {
+                        "from": "shortlisted",
+                        "to": "screening",
+                        "changedAt": "2024-09-10T00:00:00.000Z",
+                        "changedBy": "company"
+                    },
+                    {
+                        "from": "screening",
+                        "to": "interview",
+                        "changedAt": "2024-09-20T00:00:00.000Z",
+                        "changedBy": "company"
+                    },
+                    {
+                        "from": "interview",
+                        "to": "offer",
+                        "changedAt": "2024-10-01T00:00:00.000Z",
+                        "changedBy": "company"
+                    },
+                    {
+                        "from": "offer",
+                        "to": "finalizing",
+                        "changedAt": "2024-10-15T00:00:00.000Z",
+                        "changedBy": "admin"
+                    },
+                    {
+                        "from": "finalizing",
+                        "to": "hired",
+                        "changedAt": "2024-11-01T00:00:00.000Z",
+                        "changedBy": "admin"
+                    }
+                ],
+                "notes": [],
+                "offer": {
+                    "rate": 10,
+                    "hoursPerWeek": 40,
+                    "type": "full_time",
+                    "startDate": "2024-11-15T00:00:00.000Z",
+                    "message": "Welcome aboard!",
+                    "status": "accepted",
+                    "sentAt": "2024-10-01T00:00:00.000Z",
+                    "respondedAt": "2024-10-10T00:00:00.000Z",
+                    "approvedByAdmin": false
+                },
+                "finalization": {
+                    "payment": {
+                        "status": "paid",
+                        "amount": 1600,
+                        "transactionId": "TXN456",
+                        "paidAt": "2024-10-20T00:00:00.000Z"
+                    },
+                    "contract": {
+                        "status": "signed",
+                        "clientSigned": true,
+                        "candidateSigned": true,
+                        "signedAt": "2024-10-25T00:00:00.000Z"
+                    },
+                    "payroll": {
+                        "status": "complete",
+                        "partner": "Deel",
+                        "completedAt": "2024-10-30T00:00:00.000Z"
+                    },
+                    "compliance": {
+                        "status": "verified",
+                        "countryRequirementsMet": true,
+                        "verifiedAt": "2024-10-28T00:00:00.000Z"
+                    },
+                    "csm": {
+                        "status": "assigned",
+                        "name": "Paula Martinez",
+                        "email": "paula@remoteleverage.com",
+                        "phone": "+1234567890",
+                        "assignedAt": "2024-10-25T00:00:00.000Z"
+                    },
+                    "startDate": {
+                        "status": "confirmed",
+                        "confirmedDate": "2024-11-15T00:00:00.000Z",
+                        "confirmedAt": "2024-10-30T00:00:00.000Z"
+                    }
+                },
+                "timeline": [],
+                "createdAt": "2026-03-01T09:03:39.719Z",
+                "updatedAt": "2026-03-01T09:03:39.719Z",
+                "__v": 0
+            }
+        ]
+    }
+}
