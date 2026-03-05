@@ -23,7 +23,7 @@ export const getJobs = asyncHandler(async (req: Request, res: Response) => {
   const jobsWithCounts = jobs.map((job) => ({
     ...job.toObject(),
     candidateCount: countMap.get(job._id.toString()) || 0,
-  }));
+  })).sort((a, b) => a.title.localeCompare(b.title));
 
   res.status(200).json({
     success: true,

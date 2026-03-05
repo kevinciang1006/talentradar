@@ -82,12 +82,12 @@ const TalentCard = ({ talent }: { talent: Talent }) => {
     <>
       <div className="bg-card rounded-xl border border-border p-5 hover:shadow-md transition-all duration-200">
         {/* Top row */}
-        <div className="flex items-start justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-11 h-11 rounded-full bg-primary/10 flex items-center justify-center text-primary font-semibold text-sm">
+        <div className="flex items-start justify-between gap-3">
+          <div className="flex items-center gap-3 flex-1 min-w-0">
+            <div className="w-11 h-11 rounded-full bg-primary/10 flex items-center justify-center text-primary font-semibold text-sm shrink-0">
               {initials}
             </div>
-            <div className="min-w-0">
+            <div className="min-w-0 flex-1">
               <p className="text-sm font-semibold text-foreground truncate">{fullName}</p>
               <p className="text-xs text-muted-foreground truncate">{talent.headline}</p>
             </div>
