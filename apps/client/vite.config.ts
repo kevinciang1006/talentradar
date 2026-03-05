@@ -17,5 +17,11 @@ export default defineConfig(({ mode }) => ({
     alias: {
       "@": path.resolve(__dirname, "./src"),
     },
+    // Force single instance of React to fix PostHog "Invalid hook call" error
+    dedupe: ['react', 'react-dom'],
+  },
+  optimizeDeps: {
+    // Ensure PostHog uses the same React instance
+    include: ['@posthog/react'],
   },
 }));

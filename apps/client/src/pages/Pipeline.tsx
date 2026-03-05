@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
+import { usePostHog } from "@posthog/react";
 import { toast } from "sonner";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
@@ -58,6 +59,7 @@ const stageConfig: Record<string, { label: string; color: string; borderColor: s
 };
 
 const Pipeline = () => {
+  const posthog = usePostHog();
   const [selectedJob, setSelectedJob] = useState<string>("");
   const [selectedCard, setSelectedCard] = useState<PipelineEntry | null>(null);
   const [showRejected, setShowRejected] = useState(false);
@@ -108,6 +110,11 @@ const Pipeline = () => {
 
   const moveToStage = async (entryId: string, newStage: string) => {
     try {
+      posthog.capture('pipeline_stage_moved', {
+        entry_id: entryId,
+        new_stage: newStage,
+        stage_label: stageConfig[newStage]?.label
+      });
       await pipelineService.updateStage(entryId, newStage);
       toast.success(`Moved to ${stageConfig[newStage]?.label || newStage}`);
       await refreshPipeline();
@@ -133,6 +140,11 @@ const Pipeline = () => {
 
   const handleRejectFromPanel = async (entryId: string, reason: string, notes?: string) => {
     try {
+      posthog.capture('pipeline_candidate_rejected', {
+        entry_id: entryId,
+        reason,
+        has_notes: !!notes
+      });
       await pipelineService.reject(entryId, reason, notes);
       toast.success('Candidate rejected');
       setSelectedCard(null);
@@ -144,6 +156,10 @@ const Pipeline = () => {
 
   const handleAddNote = async (entryId: string, content: string) => {
     try {
+      posthog.capture('pipeline_note_added', {
+        entry_id: entryId,
+        note_length: content.length
+      });
       await pipelineService.addNote(entryId, content);
       toast.success('Note added');
       await refreshPipeline();
@@ -166,6 +182,11 @@ const Pipeline = () => {
     scheduledAt: string; candidateTimezone: string; meetingLink: string; notes?: string;
   }) => {
     try {
+      posthog.capture('pipeline_interview_scheduled', {
+        entry_id: entryId,
+        timezone: data.candidateTimezone,
+        has_notes: !!data.notes
+      });
       await pipelineService.scheduleInterview(entryId, data);
       toast.success('Interview scheduled');
       await refreshPipeline();
@@ -188,6 +209,13 @@ const Pipeline = () => {
     rate: number; hoursPerWeek: number; type: string; startDate: string; message?: string;
   }) => {
     try {
+      posthog.capture('pipeline_offer_sent', {
+        entry_id: entryId,
+        rate: data.rate,
+        hours_per_week: data.hoursPerWeek,
+        offer_type: data.type,
+        has_message: !!data.message
+      });
       await pipelineService.createOffer(entryId, data);
       toast.success('Offer sent');
       await refreshPipeline();
@@ -252,7 +280,14 @@ const Pipeline = () => {
     return (
       <div
         key={entry._id}
-        onClick={() => setSelectedCard(entry)}
+        onClick={() => {
+          posthog.capture('pipeline_card_opened', {
+            entry_id: entry._id,
+            stage: entry.stage,
+            job_id: jobId
+          });
+          setSelectedCard(entry);
+        }}
         className={`bg-card rounded-lg border border-border p-3 cursor-pointer hover:shadow-sm transition-shadow border-l-2 ${config.borderColor} group`}
       >
         <div className="flex items-center gap-2">
@@ -335,7 +370,13 @@ const Pipeline = () => {
           {jobsLoading ? (
             <Skeleton className="h-10 w-72" />
           ) : jobs.length > 0 ? (
-            <Select value={selectedJob} onValueChange={setSelectedJob}>
+            <Select value={selectedJob} onValueChange={(value) => {
+              posthog.capture('pipeline_job_selected', {
+                job_id: value,
+                job_title: jobs.find(j => j._id === value)?.title
+              });
+              setSelectedJob(value);
+            }}>
               <SelectTrigger className="w-72"><SelectValue /></SelectTrigger>
               <SelectContent>
                 {jobs.map((job) => (

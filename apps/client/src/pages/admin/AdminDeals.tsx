@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { usePostHog } from "@posthog/react";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Skeleton } from "@/components/ui/skeleton";
-import { X, CheckCircle2, Shield, Upload, Link2, FileText, Eye } from "lucide-react";
+import { X, CheckCircle2, Shield, Upload, Link2, FileText, Eye, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { adminService } from "@/services/admin.service";
 import { getAvailabilityLabel, REGION_FLAGS } from "@/utils/constants";
@@ -294,6 +295,7 @@ const FileUploadArea = ({ file, onUpload, onRemove, label }: {
 };
 
 const AdminDeals = () => {
+  const posthog = usePostHog();
   const queryClient = useQueryClient();
 
   // Fetch deals from API - LIVE DATA
@@ -582,9 +584,9 @@ const AdminDeals = () => {
 
     if (deal.stage === "finalizing") {
       const f = deal.finalizing;
-      if (!f) return "🔄 0 of 6 setup steps complete";
-      const done = [f.paymentReceived, f.contractFullySigned, f.payrollComplete, f.complianceVerified, f.csmAssigned, f.startDateConfirmed].filter(Boolean).length;
-      return `🔄 ${done} of 6 setup steps complete`;
+      if (!f) return "🔄 0 of 5 setup steps complete";
+      const done = [f.paymentReceived, f.contractFullySigned, f.payrollComplete, f.complianceVerified, f.csmAssigned].filter(Boolean).length;
+      return `🔄 ${done} of 5 setup steps complete`;
     }
 
     if (deal.stage === "hired") return `✅ Deal closed`;
@@ -613,6 +615,13 @@ const AdminDeals = () => {
   };
 
   const handleApproveOffer = (deal: Deal) => {
+    posthog.capture('admin_offer_approved', {
+      deal_id: deal.id,
+      company: deal.company,
+      candidate: deal.candidate,
+      rate: deal.rate,
+      role: deal.role
+    });
     approveMutation.mutate(deal.id);
   };
 
@@ -628,10 +637,22 @@ const AdminDeals = () => {
   };
 
   const handlePresent = (deal: Deal) => {
+    posthog.capture('admin_deal_presented', {
+      deal_id: deal.id,
+      company: deal.company,
+      candidate: deal.candidate,
+      role: deal.role
+    });
     presentMutation.mutate(deal.id);
   };
 
   const handleCandidateAccepted = (deal: Deal) => {
+    posthog.capture('admin_candidate_accepted_offer', {
+      deal_id: deal.id,
+      company: deal.company,
+      candidate: deal.candidate,
+      rate: deal.rate
+    });
     candidateResponseMutation.mutate({
       dealId: deal.id,
       data: { response: 'accepted' }
@@ -639,6 +660,13 @@ const AdminDeals = () => {
   };
 
   const handleSendCounter = (deal: Deal) => {
+    posthog.capture('admin_counter_offer_sent', {
+      deal_id: deal.id,
+      company: deal.company,
+      candidate: deal.candidate,
+      original_rate: deal.rate,
+      counter_rate: Number(counterRateInput)
+    });
     candidateResponseMutation.mutate({
       dealId: deal.id,
       data: {
@@ -655,6 +683,12 @@ const AdminDeals = () => {
   };
 
   const handleDecline = (deal: Deal) => {
+    posthog.capture('admin_candidate_declined_offer', {
+      deal_id: deal.id,
+      company: deal.company,
+      candidate: deal.candidate,
+      decline_reason: declineReason
+    });
     candidateResponseMutation.mutate({
       dealId: deal.id,
       data: {
@@ -669,6 +703,14 @@ const AdminDeals = () => {
   };
 
   const handleMarkHired = (deal: Deal) => {
+    posthog.capture('admin_deal_completed', {
+      deal_id: deal.id,
+      company: deal.company,
+      candidate: deal.candidate,
+      role: deal.role,
+      rate: deal.rate,
+      invoice_amount: deal.finalizing.invoiceAmount
+    });
     completeDealMutation.mutate(deal.id);
   };
 
@@ -833,7 +875,15 @@ const AdminDeals = () => {
             <div className="space-y-2">
               <p className="text-xs font-semibold text-foreground">Step 1: Review Offer</p>
               <div className="flex gap-2">
-                <Button size="sm" className="text-xs h-8 bg-emerald-600 hover:bg-emerald-700" onClick={() => handleApproveOffer(deal)}>Approve Offer ✓</Button>
+                <Button
+                  size="sm"
+                  className="text-xs h-8 bg-emerald-600 hover:bg-emerald-700"
+                  onClick={() => handleApproveOffer(deal)}
+                  disabled={approveMutation.isPending}
+                >
+                  {approveMutation.isPending && <Loader2 className="h-3 w-3 mr-1 animate-spin" />}
+                  Approve Offer ✓
+                </Button>
                 <Button size="sm" variant="outline" className="text-xs h-8 border-amber-300 text-amber-700 hover:bg-amber-50 hidden" onClick={() => setShowFlagForm(true)}>⚠️ Flag Issue</Button>
               </div>
               {showFlagForm && (
@@ -858,8 +908,11 @@ const AdminDeals = () => {
                     <Textarea className="mt-1 text-sm" value={flagDetails} onChange={(e) => setFlagDetails(e.target.value)} rows={3} placeholder="Explain the issue..." />
                   </div>
                   <div className="flex gap-2">
-                    <Button size="sm" variant="outline" className="text-xs h-7" onClick={() => setShowFlagForm(false)}>Cancel</Button>
-                    <Button size="sm" className="text-xs h-7" onClick={() => handleFlagIssue(deal)}>Send to Client →</Button>
+                    <Button size="sm" variant="outline" className="text-xs h-7" onClick={() => setShowFlagForm(false)} disabled={flagMutation.isPending}>Cancel</Button>
+                    <Button size="sm" className="text-xs h-7" onClick={() => handleFlagIssue(deal)} disabled={flagMutation.isPending}>
+                      {flagMutation.isPending && <Loader2 className="h-3 w-3 mr-1 animate-spin" />}
+                      Send to Client →
+                    </Button>
                   </div>
                 </div>
               )}
@@ -883,7 +936,10 @@ const AdminDeals = () => {
                     <li>Working with {deal.company}</li>
                   </ul>
                 </div>
-                <Button size="sm" className="text-xs h-8 w-full" onClick={() => handlePresent(deal)}>Mark as Presented →</Button>
+                <Button size="sm" className="text-xs h-8 w-full" onClick={() => handlePresent(deal)} disabled={presentMutation.isPending}>
+                  {presentMutation.isPending && <Loader2 className="h-3 w-3 mr-1 animate-spin" />}
+                  Mark as Presented →
+                </Button>
               </div>
             </div>
           ) : (
@@ -966,9 +1022,12 @@ const AdminDeals = () => {
                 <p className="text-xs font-semibold text-foreground mb-2">Step 3: Record Candidate Response</p>
                 <p className="text-xs text-muted-foreground mb-3">How did {deal.candidate} respond?</p>
                 <div className="flex gap-2">
-                  <Button size="sm" className="text-xs h-8 bg-emerald-600 hover:bg-emerald-700" onClick={() => handleCandidateAccepted(deal)}>✅ Accepted</Button>
-                  <Button size="sm" variant="outline" className="text-xs h-8" onClick={() => setShowNegotiateForm(true)}>🔄 Negotiating</Button>
-                  <Button size="sm" variant="outline" className="text-xs h-8 text-destructive border-destructive/30" onClick={() => setShowDeclineForm(true)}>❌ Declined</Button>
+                  <Button size="sm" className="text-xs h-8 bg-emerald-600 hover:bg-emerald-700" onClick={() => handleCandidateAccepted(deal)} disabled={candidateResponseMutation.isPending}>
+                    {candidateResponseMutation.isPending && <Loader2 className="h-3 w-3 mr-1 animate-spin" />}
+                    ✅ Accepted
+                  </Button>
+                  <Button size="sm" variant="outline" className="text-xs h-8" onClick={() => setShowNegotiateForm(true)} disabled={candidateResponseMutation.isPending}>🔄 Negotiating</Button>
+                  <Button size="sm" variant="outline" className="text-xs h-8 text-destructive border-destructive/30" onClick={() => setShowDeclineForm(true)} disabled={candidateResponseMutation.isPending}>❌ Declined</Button>
                 </div>
               </div>
 
@@ -998,8 +1057,11 @@ const AdminDeals = () => {
                     <Textarea className="mt-1 text-sm" value={counterMsgInput} onChange={(e) => setCounterMsgInput(e.target.value)} rows={3} placeholder="I appreciate the offer..." />
                   </div>
                   <div className="flex gap-2">
-                    <Button size="sm" variant="outline" className="text-xs h-7" onClick={() => setShowNegotiateForm(false)}>Cancel</Button>
-                    <Button size="sm" className="text-xs h-7" onClick={() => handleSendCounter(deal)}>Send Counter to Client →</Button>
+                    <Button size="sm" variant="outline" className="text-xs h-7" onClick={() => setShowNegotiateForm(false)} disabled={candidateResponseMutation.isPending}>Cancel</Button>
+                    <Button size="sm" className="text-xs h-7" onClick={() => handleSendCounter(deal)} disabled={candidateResponseMutation.isPending}>
+                      {candidateResponseMutation.isPending && <Loader2 className="h-3 w-3 mr-1 animate-spin" />}
+                      Send Counter to Client →
+                    </Button>
                   </div>
                 </div>
               )}
@@ -1023,8 +1085,11 @@ const AdminDeals = () => {
                     <Textarea className="mt-1 text-sm" value={declineNotes} onChange={(e) => setDeclineNotes(e.target.value)} rows={2} />
                   </div>
                   <div className="flex gap-2">
-                    <Button size="sm" variant="outline" className="text-xs h-7" onClick={() => setShowDeclineForm(false)}>Cancel</Button>
-                    <Button size="sm" variant="destructive" className="text-xs h-7" onClick={() => handleDecline(deal)}>Confirm Decline →</Button>
+                    <Button size="sm" variant="outline" className="text-xs h-7" onClick={() => setShowDeclineForm(false)} disabled={candidateResponseMutation.isPending}>Cancel</Button>
+                    <Button size="sm" variant="destructive" className="text-xs h-7" onClick={() => handleDecline(deal)} disabled={candidateResponseMutation.isPending}>
+                      {candidateResponseMutation.isPending && <Loader2 className="h-3 w-3 mr-1 animate-spin" />}
+                      Confirm Decline →
+                    </Button>
                   </div>
                 </div>
               )}
@@ -1048,7 +1113,7 @@ const AdminDeals = () => {
 
     if (stage === "in_progress") {
       const f = deal.finalizing;
-      const allDone = f.paymentReceived && f.contractFullySigned && f.payrollComplete && f.complianceVerified && f.csmAssigned && f.startDateConfirmed;
+      const allDone = f.paymentReceived && f.contractFullySigned && f.payrollComplete && f.complianceVerified && f.csmAssigned;
 
       if (readOnly) {
         return (
@@ -1114,7 +1179,7 @@ const AdminDeals = () => {
                     <Button
                       size="sm"
                       className="text-xs h-7"
-                      disabled={!f.invoiceAmount || parseFloat(f.invoiceAmount) <= 0}
+                      disabled={!f.invoiceAmount || parseFloat(f.invoiceAmount) <= 0 || generateInvoiceMutation.isPending}
                       onClick={() => {
                         generateInvoiceMutation.mutate({
                           dealId: deal.id,
@@ -1125,6 +1190,7 @@ const AdminDeals = () => {
                         });
                       }}
                     >
+                      {generateInvoiceMutation.isPending && <Loader2 className="h-3 w-3 mr-1 animate-spin" />}
                       Generate & Send Invoice →
                     </Button>
                   </>
@@ -1171,7 +1237,7 @@ const AdminDeals = () => {
                       <Button
                         size="sm"
                         className="text-xs h-7 mt-2 bg-emerald-600 hover:bg-emerald-700"
-                        disabled={!f.paymentMethod || !f.paymentRef}
+                        disabled={!f.paymentMethod || !f.paymentRef || markPaymentReceivedMutation.isPending}
                         onClick={() => {
                           markPaymentReceivedMutation.mutate({
                             dealId: deal.id,
@@ -1183,6 +1249,7 @@ const AdminDeals = () => {
                           });
                         }}
                       >
+                        {markPaymentReceivedMutation.isPending && <Loader2 className="h-3 w-3 mr-1 animate-spin" />}
                         Simulate Payment Received ✓
                       </Button>
                     </div>
@@ -1216,7 +1283,10 @@ const AdminDeals = () => {
                 {!f.contractGenerated ? (
                   <Button size="sm" className="text-xs h-7" onClick={() => {
                     generateContractMutation.mutate(deal.id);
-                  }}>Generate Contract →</Button>
+                  }} disabled={generateContractMutation.isPending}>
+                    {generateContractMutation.isPending && <Loader2 className="h-3 w-3 mr-1 animate-spin" />}
+                    Generate Contract →
+                  </Button>
                 ) : (
                   <>
                     <div className="bg-blue-50 border border-blue-200 rounded-lg p-2 space-y-1">
@@ -1254,13 +1324,20 @@ const AdminDeals = () => {
                           </Button>
                         )}
                         {!f.candidateSigned && (
-                          <Button size="sm" variant="outline" className="text-xs h-7" onClick={() => {
-                            // Simulate candidate signed (call individual endpoint)
-                            adminService.markCandidateSigned(deal.id).then(() => {
-                              queryClient.invalidateQueries({ queryKey: ['admin-deals'] });
-                              toast.success("Candidate signature simulated");
-                            });
-                          }}>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="text-xs h-7"
+                            onClick={() => {
+                              // Simulate candidate signed (call individual endpoint)
+                              adminService.markCandidateSigned(deal.id).then(() => {
+                                queryClient.invalidateQueries({ queryKey: ['admin-deals'] });
+                                toast.success("Candidate signature simulated");
+                              });
+                            }}
+                            disabled={markContractSignedMutation.isPending}
+                          >
+                            {markContractSignedMutation.isPending && <Loader2 className="h-3 w-3 mr-1 animate-spin" />}
                             Candidate Signed ✓
                           </Button>
                         )}
@@ -1343,7 +1420,7 @@ const AdminDeals = () => {
                 <Button
                   size="sm"
                   className="text-xs h-7 bg-emerald-600 hover:bg-emerald-700"
-                  disabled={!f.payrollPartner || !f.payrollRef || !f.payrollBankDetails || !f.payrollSchedule}
+                  disabled={!f.payrollPartner || !f.payrollRef || !f.payrollBankDetails || !f.payrollSchedule || setupPayrollMutation.isPending}
                   onClick={() => {
                     // Convert date to ISO datetime format if provided
                     const firstPayDateISO = f.payrollFirstPay
@@ -1363,6 +1440,7 @@ const AdminDeals = () => {
                     });
                   }}
                 >
+                  {setupPayrollMutation.isPending && <Loader2 className="h-3 w-3 mr-1 animate-spin" />}
                   Mark Payroll Setup Complete ✓
                 </Button>
               </div>
@@ -1406,17 +1484,25 @@ const AdminDeals = () => {
                   onRemove={() => updateFinalizing(deal.id, { complianceFile: null })}
                   label="Attach compliance docs (optional)"
                 />
-                <Button size="sm" className="text-xs h-7 bg-emerald-600 hover:bg-emerald-700" onClick={() => {
-                  verifyComplianceMutation.mutate({
-                    dealId: deal.id,
-                    data: {
-                      taxClassification: f.complianceTax,
-                      laborRequirements: f.complianceLabor,
-                      privacyRequirements: f.compliancePrivacy,
-                      notes: f.complianceNotes,
-                    }
-                  });
-                }}>Mark All Verified ✓</Button>
+                <Button
+                  size="sm"
+                  className="text-xs h-7 bg-emerald-600 hover:bg-emerald-700"
+                  onClick={() => {
+                    verifyComplianceMutation.mutate({
+                      dealId: deal.id,
+                      data: {
+                        taxClassification: f.complianceTax,
+                        laborRequirements: f.complianceLabor,
+                        privacyRequirements: f.compliancePrivacy,
+                        notes: f.complianceNotes,
+                      }
+                    });
+                  }}
+                  disabled={verifyComplianceMutation.isPending}
+                >
+                  {verifyComplianceMutation.isPending && <Loader2 className="h-3 w-3 mr-1 animate-spin" />}
+                  Mark All Verified ✓
+                </Button>
               </div>
             )}
           </div>
@@ -1453,54 +1539,20 @@ const AdminDeals = () => {
                     <li>Ongoing account management</li>
                   </ul>
                 </div>
-                <Button size="sm" className="text-xs h-7 bg-emerald-600 hover:bg-emerald-700" disabled={!f.csmName} onClick={() => {
-                  assignCSMMutation.mutate({
-                    dealId: deal.id,
-                    data: { name: f.csmName }
-                  });
-                }}>Assign & Notify Client ✓</Button>
-              </div>
-            )}
-          </div>
-
-          {/* Sub-step 6: Start Date */}
-          <div className="space-y-2">
-            <div className="flex items-center gap-2">
-              {f.startDateConfirmed ? <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0" /> : <div className="w-4 h-4 rounded border border-muted-foreground/30 shrink-0" />}
-              <p className="text-sm font-medium text-foreground">6. Start Date Confirmation</p>
-            </div>
-            {f.startDateConfirmed ? (
-              <div className="ml-6 bg-emerald-500/5 rounded-lg p-2.5 space-y-1">
-                <p className="text-xs text-emerald-600">✅ Start Date Confirmed</p>
-                <p className="text-xs text-muted-foreground">Both parties confirmed for {deal.startDate}</p>
-              </div>
-            ) : (
-              <div className="ml-6 space-y-2">
-                <p className="text-xs text-muted-foreground">Proposed Start Date: <span className="font-medium text-foreground">{deal.startDate}</span></p>
-                <div className="space-y-1">
-                  <label className="flex items-center gap-2 text-xs cursor-pointer">
-                    <input type="checkbox" checked={f.startCandidateConfirmed} onChange={() => updateFinalizing(deal.id, { startCandidateConfirmed: !f.startCandidateConfirmed })} className="accent-primary" />
-                    Candidate confirmed availability
-                  </label>
-                  <label className="flex items-center gap-2 text-xs cursor-pointer">
-                    <input type="checkbox" checked={f.startClientConfirmed} onChange={() => updateFinalizing(deal.id, { startClientConfirmed: !f.startClientConfirmed })} className="accent-primary" />
-                    Client confirmed readiness
-                  </label>
-                </div>
-                <div>
-                  <Label className="text-xs">Notes</Label>
-                  <Textarea className="mt-1 text-xs" rows={2} value={f.startNotes} onChange={(e) => updateFinalizing(deal.id, { startNotes: e.target.value })} />
-                </div>
-                <Button size="sm" className="text-xs h-7 bg-emerald-600 hover:bg-emerald-700" onClick={() => {
-                  confirmStartDateMutation.mutate({
-                    dealId: deal.id,
-                    data: {
-                      candidateConfirmed: f.startCandidateConfirmed,
-                      clientConfirmed: f.startClientConfirmed,
-                      notes: f.startNotes,
-                    }
-                  });
-                }}>Confirm Start Date ✓</Button>
+                <Button
+                  size="sm"
+                  className="text-xs h-7 bg-emerald-600 hover:bg-emerald-700"
+                  disabled={!f.csmName || assignCSMMutation.isPending}
+                  onClick={() => {
+                    assignCSMMutation.mutate({
+                      dealId: deal.id,
+                      data: { name: f.csmName }
+                    });
+                  }}
+                >
+                  {assignCSMMutation.isPending && <Loader2 className="h-3 w-3 mr-1 animate-spin" />}
+                  Assign & Notify Client ✓
+                </Button>
               </div>
             )}
           </div>
@@ -1515,9 +1567,16 @@ const AdminDeals = () => {
                 <p>✅ Payroll: Setup complete, first pay {f.payrollFirstPay}</p>
                 <p>✅ Compliance: Verified</p>
                 <p>✅ CSM: {f.csmName} assigned</p>
-                <p>✅ Start Date: {deal.startDate} confirmed</p>
               </div>
-              <Button size="sm" className="text-xs bg-emerald-600 hover:bg-emerald-700" onClick={() => handleMarkHired(deal)}>✅ Close Deal — Mark as Hired</Button>
+              <Button
+                size="sm"
+                className="text-xs bg-emerald-600 hover:bg-emerald-700"
+                onClick={() => handleMarkHired(deal)}
+                disabled={completeDealMutation.isPending}
+              >
+                {completeDealMutation.isPending && <Loader2 className="h-3 w-3 mr-1 animate-spin" />}
+                ✅ Close Deal — Mark as Hired
+              </Button>
             </div>
           )}
         </div>
@@ -1607,7 +1666,15 @@ const AdminDeals = () => {
                 {colDeals.map((deal) => (
                   <div
                     key={deal.id}
-                    onClick={() => setSelectedDeal(deal)}
+                    onClick={() => {
+                      posthog.capture('admin_deal_opened', {
+                        deal_id: deal.id,
+                        stage: deal.stage,
+                        company: deal.company,
+                        candidate: deal.candidate
+                      });
+                      setSelectedDeal(deal);
+                    }}
                     className="bg-card rounded-lg border border-border p-3 cursor-pointer hover:shadow-sm transition-shadow border-l-2 group"
                   >
                     <p className="text-sm font-semibold text-foreground">{deal.company}</p>

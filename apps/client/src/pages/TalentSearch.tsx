@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { usePostHog } from "@posthog/react";
 import TalentCard from "@/components/TalentCard";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -129,6 +130,7 @@ const FilterSidebar = ({
 };
 
 const TalentSearch = () => {
+  const posthog = usePostHog();
   const [query, setQuery] = useState("");
   const [debouncedQuery, setDebouncedQuery] = useState("");
   const [sortBy, setSortBy] = useState("relevance");
@@ -143,16 +145,38 @@ const TalentSearch = () => {
     const timer = setTimeout(() => {
       setDebouncedQuery(query);
       setPage(1); // Reset to page 1 on search change
+
+      // Track search event
+      if (query) {
+        posthog.capture('talent_search_performed', {
+          query,
+          query_length: query.length
+        });
+      }
     }, 300);
     return () => clearTimeout(timer);
-  }, [query]);
+  }, [query, posthog]);
 
   // Reset page when filters change
   useEffect(() => {
     setPage(1);
-  }, [selectedRoles, selectedRegions, selectedEnglish, selectedAvailability, sortBy]);
+
+    // Track filter/sort changes
+    const filterCount = selectedRoles.length + selectedRegions.length + selectedEnglish.length + selectedAvailability.length;
+    if (filterCount > 0) {
+      posthog.capture('talent_filters_applied', {
+        role_filters: selectedRoles.length,
+        region_filters: selectedRegions.length,
+        english_filters: selectedEnglish.length,
+        availability_filters: selectedAvailability.length,
+        total_filters: filterCount,
+        sort_by: sortBy
+      });
+    }
+  }, [selectedRoles, selectedRegions, selectedEnglish, selectedAvailability, sortBy, posthog]);
 
   const clearFilters = () => {
+    posthog.capture('talent_filters_cleared');
     setSelectedRoles([]);
     setSelectedRegions([]);
     setSelectedEnglish([]);
@@ -297,7 +321,10 @@ const TalentSearch = () => {
             <Button
               variant="outline"
               size="sm"
-              onClick={() => setPage(page - 1)}
+              onClick={() => {
+                posthog.capture('talent_pagination_clicked', { direction: 'previous', from_page: page, to_page: page - 1 });
+                setPage(page - 1);
+              }}
               disabled={page === 1}
             >
               Previous
@@ -320,7 +347,10 @@ const TalentSearch = () => {
                     key={pageNum}
                     variant={page === pageNum ? "default" : "outline"}
                     size="sm"
-                    onClick={() => setPage(pageNum)}
+                    onClick={() => {
+                      posthog.capture('talent_pagination_clicked', { direction: 'specific', from_page: page, to_page: pageNum });
+                      setPage(pageNum);
+                    }}
                     className="w-9"
                   >
                     {pageNum}
@@ -331,7 +361,10 @@ const TalentSearch = () => {
             <Button
               variant="outline"
               size="sm"
-              onClick={() => setPage(page + 1)}
+              onClick={() => {
+                posthog.capture('talent_pagination_clicked', { direction: 'next', from_page: page, to_page: page + 1 });
+                setPage(page + 1);
+              }}
               disabled={page === meta.totalPages}
             >
               Next

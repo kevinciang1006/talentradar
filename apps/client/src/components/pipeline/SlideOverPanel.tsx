@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { X, CheckCircle2, ExternalLink, Shield, Calendar, FileText, Plus } from "lucide-react";
+import { X, CheckCircle2, ExternalLink, Shield, Calendar, FileText, Plus, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -62,6 +62,20 @@ export const SlideOverPanel = ({
   const [note, setNote] = useState("");
   const [expandedStage, setExpandedStage] = useState<string | null>(entry.stage);
 
+  // Loading states for async actions
+  const [isMovingStage, setIsMovingStage] = useState(false);
+  const [isAddingNote, setIsAddingNote] = useState(false);
+  const [isAssigningTask, setIsAssigningTask] = useState(false);
+  const [isSchedulingInterview, setIsSchedulingInterview] = useState(false);
+  const [isCompletingInterview, setIsCompletingInterview] = useState(false);
+  const [isSendingOffer, setIsSendingOffer] = useState(false);
+  const [isProcessingPayment, setIsProcessingPayment] = useState(false);
+  const [isSigningContract, setIsSigningContract] = useState(false);
+  const [isRejecting, setIsRejecting] = useState(false);
+  const [isAcceptingCounter, setIsAcceptingCounter] = useState(false);
+  const [isRevisingOffer, setIsRevisingOffer] = useState(false);
+  const [isDecliningCounter, setIsDecliningCounter] = useState(false);
+
   // Auto-expand current stage when it changes
   useEffect(() => {
     setExpandedStage(entry.stage);
@@ -119,8 +133,13 @@ export const SlideOverPanel = ({
 
   const handleAddNote = async () => {
     if (!note.trim()) return;
-    await onAddNote(entry._id, note);
-    setNote("");
+    setIsAddingNote(true);
+    try {
+      await onAddNote(entry._id, note);
+      setNote("");
+    } finally {
+      setIsAddingNote(false);
+    }
   };
 
   const handleSendTask = async () => {
@@ -132,19 +151,24 @@ export const SlideOverPanel = ({
     // Convert datetime-local format to ISO 8601
     const dueDateISO = new Date(taskDue).toISOString();
 
-    await onAssignTask(entry._id, {
-      title: taskTitle,
-      description: taskDesc,
-      dueDate: dueDateISO,
-      taskLink,
-      submissionLink,
-    });
-    setShowTaskForm(false);
-    setTaskTitle("");
-    setTaskDesc("");
-    setTaskDue("");
-    setTaskLink("");
-    setSubmissionLink("");
+    setIsAssigningTask(true);
+    try {
+      await onAssignTask(entry._id, {
+        title: taskTitle,
+        description: taskDesc,
+        dueDate: dueDateISO,
+        taskLink,
+        submissionLink,
+      });
+      setShowTaskForm(false);
+      setTaskTitle("");
+      setTaskDesc("");
+      setTaskDue("");
+      setTaskLink("");
+      setSubmissionLink("");
+    } finally {
+      setIsAssigningTask(false);
+    }
   };
 
   const handleScheduleInterview = async () => {
@@ -156,20 +180,30 @@ export const SlideOverPanel = ({
     // Convert datetime-local format to ISO 8601
     const scheduledAtISO = new Date(intDateTime).toISOString();
 
-    await onScheduleInterview(entry._id, {
-      scheduledAt: scheduledAtISO,
-      candidateTimezone: intTimezone,
-      meetingLink: intLink,
-      notes: intNotes,
-    });
-    setIntDateTime("");
-    setIntLink("");
-    setIntNotes("");
+    setIsSchedulingInterview(true);
+    try {
+      await onScheduleInterview(entry._id, {
+        scheduledAt: scheduledAtISO,
+        candidateTimezone: intTimezone,
+        meetingLink: intLink,
+        notes: intNotes,
+      });
+      setIntDateTime("");
+      setIntLink("");
+      setIntNotes("");
+    } finally {
+      setIsSchedulingInterview(false);
+    }
   };
 
   const handleMarkInterviewComplete = async () => {
-    await onInterviewComplete(entry._id, interviewNotesText);
-    setInterviewNotesText("");
+    setIsCompletingInterview(true);
+    try {
+      await onInterviewComplete(entry._id, interviewNotesText);
+      setInterviewNotesText("");
+    } finally {
+      setIsCompletingInterview(false);
+    }
   };
 
   const handleSendOffer = async () => {
@@ -181,29 +215,41 @@ export const SlideOverPanel = ({
     // Convert datetime-local format to ISO 8601
     const startDateISO = new Date(offStart).toISOString();
 
-    await onSendOffer(entry._id, {
-      rate: Number(offRate),
-      hoursPerWeek: Number(offHours),
-      type: offType,
-      startDate: startDateISO,
-      message: offMsg,
-    });
-    setOffMsg("");
+    setIsSendingOffer(true);
+    try {
+      await onSendOffer(entry._id, {
+        rate: Number(offRate),
+        hoursPerWeek: Number(offHours),
+        type: offType,
+        startDate: startDateISO,
+        message: offMsg,
+      });
+      setOffMsg("");
+    } finally {
+      setIsSendingOffer(false);
+    }
   };
 
   const handleProcessPayment = () => {
+    setIsProcessingPayment(true);
     // Simulate payment processing
     setTimeout(() => {
       setPaymentSuccess(true);
+      setIsProcessingPayment(false);
     }, 1000);
   };
 
   const handlePaymentDone = async () => {
-    await onCompletePayment(entry._id, paymentMethod, `TXN-${Date.now()}`);
-    setShowPaymentModal(false);
-    setPaymentSuccess(false);
-    setPaymentMethod("stripe");
-    setPaymentTransactionId("");
+    setIsProcessingPayment(true);
+    try {
+      await onCompletePayment(entry._id, paymentMethod, `TXN-${Date.now()}`);
+      setShowPaymentModal(false);
+      setPaymentSuccess(false);
+      setPaymentMethod("stripe");
+      setPaymentTransactionId("");
+    } finally {
+      setIsProcessingPayment(false);
+    }
   };
 
   const handleSignContractAction = () => {
@@ -211,10 +257,15 @@ export const SlideOverPanel = ({
   };
 
   const handleContractDone = async () => {
-    await onSignContract(entry._id);
-    setShowContractModal(false);
-    setContractSigned(false);
-    setContractAgreed(false);
+    setIsSigningContract(true);
+    try {
+      await onSignContract(entry._id);
+      setShowContractModal(false);
+      setContractSigned(false);
+      setContractAgreed(false);
+    } finally {
+      setIsSigningContract(false);
+    }
   };
 
   const handleRejectCandidate = async () => {
@@ -222,17 +273,25 @@ export const SlideOverPanel = ({
       toast.error("Please select a rejection reason");
       return;
     }
-    await onReject(entry._id, rejectReason, rejectNotes);
-    setShowRejectModal(false);
-    onClose();
+    setIsRejecting(true);
+    try {
+      await onReject(entry._id, rejectReason, rejectNotes);
+      setShowRejectModal(false);
+      onClose();
+    } finally {
+      setIsRejecting(false);
+    }
   };
 
   const handleAcceptCounter = async () => {
+    setIsAcceptingCounter(true);
     try {
       await pipelineService.acceptCounterOffer(entry._id);
       toast.success("Counter-offer accepted! Remote Leverage will review.");
     } catch (error) {
       toast.error("Failed to accept counter-offer");
+    } finally {
+      setIsAcceptingCounter(false);
     }
   };
 
@@ -242,6 +301,7 @@ export const SlideOverPanel = ({
       return;
     }
 
+    setIsRevisingOffer(true);
     try {
       await pipelineService.reviseOffer(entry._id, {
         rate: Number(reviseRate),
@@ -255,6 +315,8 @@ export const SlideOverPanel = ({
       setReviseMessage("");
     } catch (error) {
       toast.error("Failed to submit revised offer");
+    } finally {
+      setIsRevisingOffer(false);
     }
   };
 
@@ -264,6 +326,7 @@ export const SlideOverPanel = ({
       return;
     }
 
+    setIsDecliningCounter(true);
     try {
       await pipelineService.declineCounterOffer(entry._id, declineCounterReason);
       toast.success("Counter-offer declined");
@@ -272,6 +335,8 @@ export const SlideOverPanel = ({
       onClose();
     } catch (error) {
       toast.error("Failed to decline counter-offer");
+    } finally {
+      setIsDecliningCounter(false);
     }
   };
 
@@ -280,21 +345,33 @@ export const SlideOverPanel = ({
       case "shortlisted":
         return {
           label: "Move to Screening →",
-          onClick: () => onMoveToStage(entry._id, "screening"),
-          variant: "default" as const
+          onClick: () => {
+            setIsMovingStage(true);
+            onMoveToStage(entry._id, "screening").finally(() => setIsMovingStage(false));
+          },
+          variant: "default" as const,
+          disabled: isMovingStage
         };
       case "screening":
         return {
           label: "Move to Interview →",
-          onClick: () => onMoveToStage(entry._id, "interview"),
-          variant: "default" as const
+          onClick: () => {
+            setIsMovingStage(true);
+            onMoveToStage(entry._id, "interview").finally(() => setIsMovingStage(false));
+          },
+          variant: "default" as const,
+          disabled: isMovingStage
         };
       case "interview":
         if (entry.interview?.status === "completed") {
           return {
             label: "Move to Offer →",
-            onClick: () => onMoveToStage(entry._id, "offer"),
-            variant: "default" as const
+            onClick: () => {
+              setIsMovingStage(true);
+              onMoveToStage(entry._id, "offer").finally(() => setIsMovingStage(false));
+            },
+            variant: "default" as const,
+            disabled: isMovingStage
           };
         }
         return null;
@@ -302,17 +379,18 @@ export const SlideOverPanel = ({
         if (entry.offer?.status === "accepted") {
           return {
             label: "Proceed to Finalizing →",
-            onClick: () => onMoveToStage(entry._id, "finalizing"),
-            variant: "default" as const
+            onClick: () => {
+              setIsMovingStage(true);
+              onMoveToStage(entry._id, "finalizing").finally(() => setIsMovingStage(false));
+            },
+            variant: "default" as const,
+            disabled: isMovingStage
           };
         }
         return null;
       case "finalizing":
-        return {
-          label: "🎉 Mark as Hired",
-          onClick: () => onMoveToStage(entry._id, "hired"),
-          variant: "default" as const
-        };
+        // Removed "Mark as Hired" - only admins can do this
+        return null;
       case "hired":
         return null;
       default:
@@ -447,6 +525,7 @@ export const SlideOverPanel = ({
                         variant="outline"
                         className="text-xs h-7"
                         onClick={() => setShowTaskForm(false)}
+                        disabled={isAssigningTask}
                       >
                         Cancel
                       </Button>
@@ -454,7 +533,9 @@ export const SlideOverPanel = ({
                         size="sm"
                         className="text-xs h-7"
                         onClick={handleSendTask}
+                        disabled={isAssigningTask}
                       >
+                        {isAssigningTask && <Loader2 className="h-3 w-3 mr-1 animate-spin" />}
                         Send Task →
                       </Button>
                     </div>
@@ -520,7 +601,9 @@ export const SlideOverPanel = ({
                     size="sm"
                     className="text-xs h-7 w-full"
                     onClick={handleMarkInterviewComplete}
+                    disabled={isCompletingInterview}
                   >
+                    {isCompletingInterview && <Loader2 className="h-3 w-3 mr-1 animate-spin" />}
                     Mark Interview Complete ✓
                   </Button>
                 </>
@@ -596,7 +679,9 @@ export const SlideOverPanel = ({
               size="sm"
               className="text-xs h-7 w-full"
               onClick={handleScheduleInterview}
+              disabled={isSchedulingInterview}
             >
+              {isSchedulingInterview && <Loader2 className="h-3 w-3 mr-1 animate-spin" />}
               Schedule Interview →
             </Button>
           </div>
@@ -681,7 +766,9 @@ export const SlideOverPanel = ({
                 size="sm"
                 className="text-xs h-7 w-full"
                 onClick={handleSendOffer}
+                disabled={isSendingOffer}
               >
+                {isSendingOffer && <Loader2 className="h-3 w-3 mr-1 animate-spin" />}
                 Send Offer →
               </Button>
             </div>
@@ -770,7 +857,9 @@ export const SlideOverPanel = ({
                       size="sm"
                       className="text-xs h-7 w-full bg-emerald-600 hover:bg-emerald-700"
                       onClick={handleAcceptCounter}
+                      disabled={isAcceptingCounter || isRevisingOffer || isDecliningCounter}
                     >
+                      {isAcceptingCounter && <Loader2 className="h-3 w-3 mr-1 animate-spin" />}
                       Accept Counter-Offer
                     </Button>
                     <Button
@@ -782,6 +871,7 @@ export const SlideOverPanel = ({
                         setReviseHours(latestCounter.hoursPerWeek ? String(latestCounter.hoursPerWeek) : "");
                         setShowReviseForm(true);
                       }}
+                      disabled={isAcceptingCounter || isRevisingOffer || isDecliningCounter}
                     >
                       Send Revised Offer
                     </Button>
@@ -790,6 +880,7 @@ export const SlideOverPanel = ({
                       variant="outline"
                       className="text-xs h-7 w-full text-destructive border-destructive/30"
                       onClick={() => setShowDeclineCounterForm(true)}
+                      disabled={isAcceptingCounter || isRevisingOffer || isDecliningCounter}
                     >
                       Decline Counter-Offer
                     </Button>
@@ -846,6 +937,7 @@ export const SlideOverPanel = ({
                       setReviseHours("");
                       setReviseMessage("");
                     }}
+                    disabled={isRevisingOffer}
                   >
                     Cancel
                   </Button>
@@ -853,7 +945,9 @@ export const SlideOverPanel = ({
                     size="sm"
                     className="text-xs h-7"
                     onClick={handleReviseOffer}
+                    disabled={isRevisingOffer}
                   >
+                    {isRevisingOffer && <Loader2 className="h-3 w-3 mr-1 animate-spin" />}
                     Submit Revised Offer →
                   </Button>
                 </div>
@@ -883,6 +977,7 @@ export const SlideOverPanel = ({
                       setShowDeclineCounterForm(false);
                       setDeclineCounterReason("");
                     }}
+                    disabled={isDecliningCounter}
                   >
                     Cancel
                   </Button>
@@ -891,7 +986,9 @@ export const SlideOverPanel = ({
                     variant="destructive"
                     className="text-xs h-7"
                     onClick={handleDeclineCounter}
+                    disabled={isDecliningCounter}
                   >
+                    {isDecliningCounter && <Loader2 className="h-3 w-3 mr-1 animate-spin" />}
                     Confirm Decline
                   </Button>
                 </div>
@@ -1252,8 +1349,9 @@ export const SlideOverPanel = ({
               size="sm"
               className="mt-2 text-xs h-7"
               onClick={handleAddNote}
-              disabled={!note.trim()}
+              disabled={!note.trim() || isAddingNote}
             >
+              {isAddingNote && <Loader2 className="h-3 w-3 mr-1 animate-spin" />}
               Add Note
             </Button>
 
@@ -1298,7 +1396,9 @@ export const SlideOverPanel = ({
               className="w-full"
               variant={mainAction.variant}
               onClick={mainAction.onClick}
+              disabled={mainAction.disabled}
             >
+              {mainAction.disabled && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
               {mainAction.label}
             </Button>
           )}
@@ -1366,10 +1466,11 @@ export const SlideOverPanel = ({
                   💳 Demo: This simulates a payment. In production, you'd be redirected to Stripe.
                 </p>
                 <div className="flex justify-end gap-2">
-                  <Button variant="outline" onClick={() => setShowPaymentModal(false)}>
+                  <Button variant="outline" onClick={() => setShowPaymentModal(false)} disabled={isProcessingPayment}>
                     Cancel
                   </Button>
-                  <Button onClick={handleProcessPayment}>
+                  <Button onClick={handleProcessPayment} disabled={isProcessingPayment}>
+                    {isProcessingPayment && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
                     Pay ${entry.finalization?.payment?.amount || 2500} →
                   </Button>
                 </div>
@@ -1389,7 +1490,10 @@ export const SlideOverPanel = ({
               <p className="text-xs text-muted-foreground">
                 Remote Leverage will now generate your contract
               </p>
-              <Button onClick={handlePaymentDone} className="w-full">Done ✓</Button>
+              <Button onClick={handlePaymentDone} className="w-full" disabled={isProcessingPayment}>
+                {isProcessingPayment && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
+                Done ✓
+              </Button>
             </div>
           )}
         </DialogContent>
@@ -1444,10 +1548,11 @@ export const SlideOverPanel = ({
                   </span>
                 </label>
                 <div className="flex justify-end gap-2">
-                  <Button variant="outline" onClick={() => setShowContractModal(false)}>
+                  <Button variant="outline" onClick={() => setShowContractModal(false)} disabled={isSigningContract}>
                     Cancel
                   </Button>
-                  <Button onClick={handleSignContractAction} disabled={!contractAgreed}>
+                  <Button onClick={handleSignContractAction} disabled={!contractAgreed || isSigningContract}>
+                    {isSigningContract && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
                     Sign Contract →
                   </Button>
                 </div>
@@ -1467,7 +1572,10 @@ export const SlideOverPanel = ({
               <p className="text-xs text-muted-foreground">
                 Remote Leverage will now complete payroll setup and compliance verification
               </p>
-              <Button onClick={handleContractDone} className="w-full">Done ✓</Button>
+              <Button onClick={handleContractDone} className="w-full" disabled={isSigningContract}>
+                {isSigningContract && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
+                Done ✓
+              </Button>
             </div>
           )}
         </DialogContent>
@@ -1509,10 +1617,11 @@ export const SlideOverPanel = ({
               />
             </div>
             <div className="flex justify-end gap-2">
-              <Button variant="outline" onClick={() => setShowRejectModal(false)}>
+              <Button variant="outline" onClick={() => setShowRejectModal(false)} disabled={isRejecting}>
                 Cancel
               </Button>
-              <Button variant="destructive" onClick={handleRejectCandidate}>
+              <Button variant="destructive" onClick={handleRejectCandidate} disabled={isRejecting}>
+                {isRejecting && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
                 Reject Candidate
               </Button>
             </div>
