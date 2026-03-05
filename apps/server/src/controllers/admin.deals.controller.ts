@@ -9,7 +9,8 @@ import {
   isFinalizationComplete,
   getIncompleteSteps,
 } from '../utils/dealTransform';
-import { formatFileSize } from '../middleware/upload.middleware';
+import { formatFileSize, isUsingCloudinary } from '../middleware/upload.middleware';
+import { uploadToCloudinary } from '../utils/cloudinary';
 import {
   ApproveOfferInput,
   PresentOfferInput,
@@ -493,9 +494,19 @@ export const uploadInvoice = asyncHandler(async (req: Request, res: Response) =>
     throw new ApiError(404, 'Deal or finalization not found', 'NOT_FOUND');
   }
 
-  // Store file metadata
-  const fileUrl = `/api/v1/files/${id}/invoices/${file.filename}`;
+  // Upload to Cloudinary if configured, otherwise use local storage
+  let fileUrl: string;
 
+  if (isUsingCloudinary) {
+    // Upload to Cloudinary
+    const cloudinaryResult = await uploadToCloudinary(file, id, 'invoices');
+    fileUrl = cloudinaryResult.secure_url;
+  } else {
+    // Local storage (fallback for development)
+    fileUrl = `/api/v1/files/${id}/invoices/${file.filename}`;
+  }
+
+  // Store file metadata
   entry.finalization.payment.invoiceFile = {
     name: file.originalname,
     size: file.size,
@@ -621,9 +632,19 @@ export const uploadContract = asyncHandler(async (req: Request, res: Response) =
     throw new ApiError(404, 'Deal or finalization not found', 'NOT_FOUND');
   }
 
-  // Store file metadata
-  const fileUrl = `/api/v1/files/${id}/contracts/${file.filename}`;
+  // Upload to Cloudinary if configured, otherwise use local storage
+  let fileUrl: string;
 
+  if (isUsingCloudinary) {
+    // Upload to Cloudinary
+    const cloudinaryResult = await uploadToCloudinary(file, id, 'contracts');
+    fileUrl = cloudinaryResult.secure_url;
+  } else {
+    // Local storage (fallback for development)
+    fileUrl = `/api/v1/files/${id}/contracts/${file.filename}`;
+  }
+
+  // Store file metadata
   entry.finalization.contract.contractFile = {
     name: file.originalname,
     size: file.size,
@@ -873,9 +894,19 @@ export const uploadCompliance = asyncHandler(async (req: Request, res: Response)
     throw new ApiError(404, 'Deal or finalization not found', 'NOT_FOUND');
   }
 
-  // Store file metadata
-  const fileUrl = `/api/v1/files/${id}/compliance/${file.filename}`;
+  // Upload to Cloudinary if configured, otherwise use local storage
+  let fileUrl: string;
 
+  if (isUsingCloudinary) {
+    // Upload to Cloudinary
+    const cloudinaryResult = await uploadToCloudinary(file, id, 'compliance');
+    fileUrl = cloudinaryResult.secure_url;
+  } else {
+    // Local storage (fallback for development)
+    fileUrl = `/api/v1/files/${id}/compliance/${file.filename}`;
+  }
+
+  // Store file metadata
   entry.finalization.compliance.complianceFile = {
     name: file.originalname,
     size: file.size,

@@ -1,0 +1,69 @@
+# This file specifies files that are *not* uploaded to Google Cloud Run
+# using gcloud. It follows the same syntax as .gitignore.
+
+# Node.js dependencies
+node_modules/
+
+# Build output (will be rebuilt during deployment)
+dist/
+build/
+
+# Environment files (set via Cloud Run console)
+.env
+.env.*
+
+# Development files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Testing
+coverage/
+.nyc_output/
+*.test.ts
+*.spec.ts
+__tests__/
+
+# Documentation
+README.md
+*.md
+docs/
+LICENSE
+
+# Git
+.git/
+.gitignore
+
+# CI/CD
+.github/
+.gitlab-ci.yml
+
+# Logs
+logs/
+*.log
+
+# Temporary files
+tmp/
+temp/
+.tmp/
+
+# Docker files (using gcloud buildpacks instead)
+Dockerfile
+.dockerignore
+docker-compose.yml
+
+# Uploads (use Cloudinary in production)
+uploads/
+
+# Scripts
+scripts/
+
+# Monorepo
+.turbo/
+tsconfig.tsbuildinfo
+
+# Misc
+.gcloudignore

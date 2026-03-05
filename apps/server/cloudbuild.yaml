@@ -1,0 +1,70 @@
+# Google Cloud Build configuration for TalentRadar Backend
+# This file automates building and deploying to Cloud Run
+
+steps:
+  # Step 1: Build Docker image
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '-t'
+      - 'gcr.io/$PROJECT_ID/talentradar-backend:$COMMIT_SHA'
+      - '-t'
+      - 'gcr.io/$PROJECT_ID/talentradar-backend:latest'
+      - '-f'
+      - 'Dockerfile'
+      - '.'
+    dir: 'apps/server'
+
+  # Step 2: Push image to Google Container Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - 'gcr.io/$PROJECT_ID/talentradar-backend:$COMMIT_SHA'
+
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - 'gcr.io/$PROJECT_ID/talentradar-backend:latest'
+
+  # Step 3: Deploy to Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args:
+      - 'run'
+      - 'deploy'
+      - 'talentradar-backend'
+      - '--image=gcr.io/$PROJECT_ID/talentradar-backend:$COMMIT_SHA'
+      - '--region=us-central1'
+      - '--platform=managed'
+      - '--allow-unauthenticated'
+      - '--port=5000'
+      - '--memory=512Mi'
+      - '--timeout=60s'
+      - '--max-instances=10'
+      - '--concurrency=80'
+      - '--cpu=1'
+      # Note: Environment variables should be set via Cloud Run console or gcloud command
+      # This avoids committing secrets to the repository
+
+# Images to be pushed to Container Registry
+images:
+  - 'gcr.io/$PROJECT_ID/talentradar-backend:$COMMIT_SHA'
+  - 'gcr.io/$PROJECT_ID/talentradar-backend:latest'
+
+# Build configuration
+options:
+  machineType: 'N1_HIGHCPU_8'  # Faster builds
+  logging: CLOUD_LOGGING_ONLY
+
+# Timeout for entire build (10 minutes)
+timeout: '600s'
+
+# Substitutions (can be overridden)
+substitutions:
+  _REGION: 'us-central1'
+  _SERVICE_NAME: 'talentradar-backend'
+
+# Note: To set environment variables, use:
+# gcloud run services update talentradar-backend \
+#   --region us-central1 \
+#   --set-env-vars="PORT=5000,NODE_ENV=production,MONGODB_URI=...,JWT_SECRET=...,CORS_ORIGIN=..."

@@ -3,8 +3,30 @@ import path from 'path';
 import fs from 'fs';
 import { Request } from 'express';
 
-// Local storage configuration
-const storage = multer.diskStorage({
+/**
+ * Determine storage strategy based on environment
+ *
+ * PRODUCTION (Cloudinary configured):
+ *   - Uses memoryStorage (files stored in buffer)
+ *   - Uploaded to Cloudinary in controllers
+ *   - Persistent, scalable storage
+ *
+ * DEVELOPMENT (Cloudinary not configured):
+ *   - Uses diskStorage (files saved locally)
+ *   - Falls back to local disk
+ *   - Ephemeral on Railway/Render but OK for dev
+ */
+const useCloudinary = !!(
+  process.env.CLOUDINARY_CLOUD_NAME &&
+  process.env.CLOUDINARY_API_KEY &&
+  process.env.CLOUDINARY_API_SECRET
+);
+
+// Memory storage for Cloudinary (production)
+const memoryStorage = multer.memoryStorage();
+
+// Disk storage for local development (fallback)
+const diskStorage = multer.diskStorage({
   destination: (req: Request, file, cb) => {
     const { id } = req.params; // dealId
     const category = req.path.includes('invoice') ? 'invoices'
@@ -30,6 +52,9 @@ const storage = multer.diskStorage({
     cb(null, uniqueSuffix + '-' + sanitizedName);
   }
 });
+
+// Select storage strategy
+const storage = useCloudinary ? memoryStorage : diskStorage;
 
 // File validation
 const fileFilter = (req: any, file: Express.Multer.File, cb: any) => {
@@ -78,3 +103,6 @@ export function formatFileSize(bytes: number): string {
 
   return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
 }
+
+// Export storage configuration for controllers
+export const isUsingCloudinary = useCloudinary;

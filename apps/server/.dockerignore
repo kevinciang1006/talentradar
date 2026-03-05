@@ -1,0 +1,80 @@
+# Dependencies
+node_modules
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Build output
+dist
+build
+out
+.next
+
+# Environment files
+.env
+.env.local
+.env.*.local
+.env.development
+.env.test
+.env.production
+
+# IDEs and editors
+.vscode
+.idea
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+*.sublime-*
+
+# Testing
+coverage
+.nyc_output
+.jest
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Temporary files
+tmp
+temp
+.tmp
+.temp
+
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Documentation
+README.md
+*.md
+docs
+LICENSE
+
+# CI/CD
+.github
+.gitlab-ci.yml
+.travis.yml
+.circleci
+
+# Monorepo
+.turbo
+tsconfig.tsbuildinfo
+
+# Uploads (should use cloud storage in production)
+uploads
+
+# Scripts (not needed in container)
+scripts
+
+# Misc
+.dockerignore
+Dockerfile
+docker-compose.yml
