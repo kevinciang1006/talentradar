@@ -29,6 +29,7 @@ const memoryStorage = multer.memoryStorage();
 const diskStorage = multer.diskStorage({
   destination: (req: Request, file, cb) => {
     const { id } = req.params; // dealId
+    const dealId = typeof id === 'string' ? id : 'temp';
     const category = req.path.includes('invoice') ? 'invoices'
                    : req.path.includes('contract') ? 'contracts'
                    : req.path.includes('compliance') ? 'compliance'
@@ -37,7 +38,7 @@ const diskStorage = multer.diskStorage({
     const uploadPath = path.join(
       __dirname,
       '../../uploads/deals',
-      id || 'temp',
+      dealId || 'temp',
       category
     );
 

@@ -452,7 +452,7 @@ export const generateInvoice = asyncHandler(async (req: Request, res: Response) 
   // Auto-generate invoice ID
   const year = new Date().getFullYear();
   const count = await PipelineEntry.countDocuments({
-    'finalization.payment.invoiceId': { $exists: true, $ne: null, $ne: '' }
+    'finalization.payment.invoiceId': { $exists: true, $nin: [null, ''] }
   });
   const invoiceNumber = `INV-${year}-${String(count + 1).padStart(4, '0')}`;
 
@@ -486,6 +486,10 @@ export const uploadInvoice = asyncHandler(async (req: Request, res: Response) =>
 
   if (!file) {
     throw new ApiError(400, 'No file uploaded', 'FILE_UPLOAD_FAILED');
+  }
+
+  if (!id || typeof id !== 'string') {
+    throw new ApiError(400, 'Invalid deal ID', 'INVALID_ID');
   }
 
   const entry = await PipelineEntry.findById(id);
@@ -591,7 +595,7 @@ export const generateContract = asyncHandler(async (req: Request, res: Response)
   // Auto-generate contract ID
   const year = new Date().getFullYear();
   const count = await PipelineEntry.countDocuments({
-    'finalization.contract.contractId': { $exists: true, $ne: null, $ne: '' }
+    'finalization.contract.contractId': { $exists: true, $nin: [null, ''] }
   });
   const contractId = `CTR-${year}-${String(count + 1).padStart(4, '0')}`;
 
@@ -624,6 +628,10 @@ export const uploadContract = asyncHandler(async (req: Request, res: Response) =
 
   if (!file) {
     throw new ApiError(400, 'No file uploaded', 'FILE_UPLOAD_FAILED');
+  }
+
+  if (!id || typeof id !== 'string') {
+    throw new ApiError(400, 'Invalid deal ID', 'INVALID_ID');
   }
 
   const entry = await PipelineEntry.findById(id);
@@ -886,6 +894,10 @@ export const uploadCompliance = asyncHandler(async (req: Request, res: Response)
 
   if (!file) {
     throw new ApiError(400, 'No file uploaded', 'FILE_UPLOAD_FAILED');
+  }
+
+  if (!id || typeof id !== 'string') {
+    throw new ApiError(400, 'Invalid deal ID', 'INVALID_ID');
   }
 
   const entry = await PipelineEntry.findById(id);

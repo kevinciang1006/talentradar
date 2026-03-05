@@ -359,7 +359,12 @@ export const updateComplianceStatus = asyncHandler(async (req: Request<{ id: str
   }
 
   entry.finalization.compliance.status = status;
-  if (taxClassification) entry.finalization.compliance.taxClassification = taxClassification;
+  if (taxClassification) {
+    entry.finalization.compliance.taxClassification = {
+      confirmed: true,
+      classification: taxClassification,
+    };
+  }
   entry.finalization.compliance.countryRequirementsMet = countryRequirementsMet;
 
   if (status === 'verified') {
@@ -627,7 +632,7 @@ export const getTalentForAdmin = asyncHandler(async (req: Request, res: Response
   }
 
   // Sort mapping - using simple sorting since we're using regex search
-  const sortMap: Record<string, Record<string, number>> = {
+  const sortMap: Record<string, any> = {
     relevance: { createdAt: -1 }, // Default to newest when searching
     hourlyRate_asc: { hourlyRate: 1 },
     hourlyRate_desc: { hourlyRate: -1 },
