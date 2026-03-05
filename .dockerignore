@@ -1,0 +1,64 @@
+# Turborepo Docker Optimizations
+# Place this at the repository root
+
+# Node modules (will be installed via npm install)
+**/node_modules
+**/.npm
+
+# Build outputs (will be built in Docker)
+**/dist
+**/build
+**/.next
+**/.turbo
+
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Environment files
+**/.env
+**/.env.*
+!**/.env.example
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Documentation
+*.md
+!apps/*/README.md
+docs/
+LICENSE
+
+# CI/CD (not needed in image)
+.github
+
+# Testing
+**/coverage
+**/.nyc_output
+**/__tests__
+**/*.test.ts
+**/*.test.tsx
+**/*.spec.ts
+**/*.spec.tsx
+
+# Logs
+**/logs
+**/*.log
+npm-debug.log*
+
+# Uploads (local development only)
+**/uploads
+
+# Temp files
+**/tmp
+**/temp
+**/.cache

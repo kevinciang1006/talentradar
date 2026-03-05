@@ -99,10 +99,10 @@ jobs:
         run: gcloud auth configure-docker ${{ env.GCP_REGION }}-docker.pkg.dev
 
       - name: Build and Push Docker image
-        working-directory: apps/server
         run: |
           IMAGE_NAME="${{ env.GCP_REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/talentradar-backend/backend:${{ github.sha }}"
-          docker build -t "${IMAGE_NAME}" .
+          # Build from repo root for turbo prune to work
+          docker build -f apps/server/Dockerfile -t "${IMAGE_NAME}" .
           docker push "${IMAGE_NAME}"
 
       - name: Deploy to Cloud Run
@@ -158,14 +158,14 @@ jobs:
         run: gcloud auth configure-docker ${{ env.GCP_REGION }}-docker.pkg.dev
 
       - name: Build and Push Docker image
-        working-directory: apps/client
         run: |
           # Get backend URL from previous job
           BACKEND_URL="${{ needs.deploy-backend.outputs.url }}"
 
-          # Build with backend URL as build arg
+          # Build with backend URL as build arg from repo root
           IMAGE_NAME="${{ env.GCP_REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/talentradar-frontend/frontend:${{ github.sha }}"
           docker build \
+            -f apps/client/Dockerfile \
             --build-arg VITE_API_URL="${BACKEND_URL}/api/v1" \
             -t "${IMAGE_NAME}" .
           docker push "${IMAGE_NAME}"
