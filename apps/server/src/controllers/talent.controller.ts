@@ -29,7 +29,14 @@ export const searchTalents = asyncHandler(async (req: Request, res: Response) =>
   const filter: Record<string, unknown> = { status: 'active' };
 
   if (search) {
-    filter.$text = { $search: search };
+    const searchRegex = new RegExp(search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
+    filter.$or = [
+      { firstName: searchRegex },
+      { lastName: searchRegex },
+      { headline: searchRegex },
+      { bio: searchRegex },
+      { 'skills.name': searchRegex },
+    ];
   }
 
   if (roleCategories) {
@@ -73,26 +80,21 @@ export const searchTalents = asyncHandler(async (req: Request, res: Response) =>
   }
 
   // Sort mapping
-  const sortMap: Record<string, Record<string, number | { $meta: string }>> = {
-    relevance: search ? { score: { $meta: 'textScore' } } : { createdAt: -1 },
+  const sortMap: Record<string, Record<string, 1 | -1>> = {
+    relevance: { createdAt: -1 },
     hourlyRate_asc: { hourlyRate: 1 },
     hourlyRate_desc: { hourlyRate: -1 },
     experience: { yearsOfExperience: -1 },
     newest: { createdAt: -1 },
   };
 
-  const sortOption = sortMap[sort] || { createdAt: -1 };
+  const sortOption = sortMap[sort] || { createdAt: -1 as const };
 
   // Calculate pagination
   const skip = (page - 1) * limit;
 
-  // Execute query with projection if text search
-  const query = search
-    ? Talent.find(filter, { score: { $meta: 'textScore' } })
-    : Talent.find(filter);
-
   const [talents, total] = await Promise.all([
-    query.sort(sortOption as Record<string, 1 | -1 | { $meta: 'textScore' }>).skip(skip).limit(limit).lean(),
+    Talent.find(filter).sort(sortOption).skip(skip).limit(limit).lean(),
     Talent.countDocuments(filter),
   ]);
 

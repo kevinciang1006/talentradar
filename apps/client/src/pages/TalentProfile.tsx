@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { toast } from "sonner";
-import { MapPin, Clock, Briefcase, DollarSign, Globe, MessageSquare, Calendar, BookmarkPlus, Download, GraduationCap, Shield, CheckCircle2, Volume2, Loader2, Check } from "lucide-react";
+import { MapPin, Clock, Briefcase, DollarSign, Globe, MessageSquare, Calendar, BookmarkPlus, Download, GraduationCap, Shield, CheckCircle2, Volume2, Loader2, Check, ArrowLeft } from "lucide-react";
 import {
   getRegionFlag,
   getRegionName,
@@ -127,12 +127,17 @@ const TalentProfilePage = () => {
 
   return (
     <div className="px-6 lg:px-8 max-w-7xl mx-auto">
-      {/* Breadcrumb */}
-      <nav className="text-sm text-muted-foreground mb-4">
-        <Link to="/talent" className="text-primary hover:underline">Talent Pool</Link>
-        <span className="mx-2">›</span>
-        <span>{fullName}</span>
-      </nav>
+      {/* Back button + Breadcrumb */}
+      <div className="flex items-center gap-3 mb-4">
+        <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0" onClick={() => navigate(-1)}>
+          <ArrowLeft className="h-4 w-4" />
+        </Button>
+        <nav className="text-sm text-muted-foreground">
+          <Link to="/talent" className="text-primary hover:underline">Talent Pool</Link>
+          <span className="mx-2">›</span>
+          <span>{fullName}</span>
+        </nav>
+      </div>
 
       {/* Header */}
       <div className="bg-card rounded-xl border border-border p-6">
@@ -185,7 +190,7 @@ const TalentProfilePage = () => {
                 )}
               </Button>
             )}
-            <Button variant="ghost" size="sm" className="gap-2 text-muted-foreground"><Download className="h-4 w-4" /> Download Profile</Button>
+            <Button variant="ghost" size="sm" className="gap-2 text-muted-foreground hidden"><Download className="h-4 w-4" /> Download Profile</Button>
           </div>
         </div>
       </div>

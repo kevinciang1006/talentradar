@@ -60,7 +60,7 @@ const TimelineEventSchema = new Schema<TimelineEvent>({
 
 const ScreeningTaskSchema = new Schema<ScreeningTask>({
   title: { type: String, required: true },
-  description: { type: String, required: true },
+  description: { type: String, required: false },
   dueDate: { type: Date, required: true },
   status: {
     type: String,

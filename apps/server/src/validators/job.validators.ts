@@ -9,7 +9,7 @@ export const createJobSchema = z.object({
     'ecommerce', 'bookkeeping_accounting', 'custom',
   ]),
   customRoleName: z.string().optional(),
-  description: z.string().min(10, 'Description must be at least 10 characters'),
+  description: z.string().min(1, 'Description must be at least 1 characters'),
   requirements: z.string().optional(),
   hourlyRateMin: z.number().min(5, 'Minimum hourly rate must be at least $5'),
   hourlyRateMax: z.number().min(5, 'Maximum hourly rate must be at least $5'),

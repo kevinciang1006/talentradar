@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useSearchParams } from "react-router-dom";
 import { usePostHog } from "@posthog/react";
 import TalentCard from "@/components/TalentCard";
 import { Input } from "@/components/ui/input";
@@ -131,22 +132,56 @@ const FilterSidebar = ({
 
 const TalentSearch = () => {
   const posthog = usePostHog();
-  const [query, setQuery] = useState("");
-  const [debouncedQuery, setDebouncedQuery] = useState("");
-  const [sortBy, setSortBy] = useState("relevance");
-  const [page, setPage] = useState(1);
-  const [selectedRoles, setSelectedRoles] = useState<string[]>([]);
-  const [selectedRegions, setSelectedRegions] = useState<string[]>([]);
-  const [selectedEnglish, setSelectedEnglish] = useState<string[]>([]);
-  const [selectedAvailability, setSelectedAvailability] = useState<string[]>([]);
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  // Initialize state from URL params
+  const [query, setQuery] = useState(searchParams.get("q") || "");
+  const [debouncedQuery, setDebouncedQuery] = useState(searchParams.get("q") || "");
+  const [sortBy, setSortBy] = useState(searchParams.get("sort") || "relevance");
+  const [page, setPage] = useState(Number(searchParams.get("page")) || 1);
+  const [selectedRoles, setSelectedRoles] = useState<string[]>(searchParams.get("roles")?.split(",").filter(Boolean) || []);
+  const [selectedRegions, setSelectedRegions] = useState<string[]>(searchParams.get("regions")?.split(",").filter(Boolean) || []);
+  const [selectedEnglish, setSelectedEnglish] = useState<string[]>(searchParams.get("english")?.split(",").filter(Boolean) || []);
+  const [selectedAvailability, setSelectedAvailability] = useState<string[]>(searchParams.get("availability")?.split(",").filter(Boolean) || []);
+
+  // Sync state to URL params
+  const syncToUrl = useCallback((overrides?: Record<string, string | number | string[] | undefined>) => {
+    const state = {
+      q: query,
+      sort: sortBy,
+      page,
+      roles: selectedRoles,
+      regions: selectedRegions,
+      english: selectedEnglish,
+      availability: selectedAvailability,
+      ...overrides,
+    };
+    const params = new URLSearchParams();
+    if (state.q) params.set("q", String(state.q));
+    if (state.sort && state.sort !== "relevance") params.set("sort", String(state.sort));
+    if (state.page && Number(state.page) > 1) params.set("page", String(state.page));
+    const roles = Array.isArray(state.roles) ? state.roles : [];
+    const regions = Array.isArray(state.regions) ? state.regions : [];
+    const english = Array.isArray(state.english) ? state.english : [];
+    const avail = Array.isArray(state.availability) ? state.availability : [];
+    if (roles.length > 0) params.set("roles", roles.join(","));
+    if (regions.length > 0) params.set("regions", regions.join(","));
+    if (english.length > 0) params.set("english", english.join(","));
+    if (avail.length > 0) params.set("availability", avail.join(","));
+    setSearchParams(params, { replace: true });
+  }, [query, sortBy, page, selectedRoles, selectedRegions, selectedEnglish, selectedAvailability, setSearchParams]);
+
+  // Update URL when state changes
+  useEffect(() => {
+    syncToUrl();
+  }, [syncToUrl]);
 
   // Debounce search query
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedQuery(query);
-      setPage(1); // Reset to page 1 on search change
+      setPage(1);
 
-      // Track search event
       if (query) {
         posthog.capture('talent_search_performed', {
           query,
@@ -161,7 +196,6 @@ const TalentSearch = () => {
   useEffect(() => {
     setPage(1);
 
-    // Track filter/sort changes
     const filterCount = selectedRoles.length + selectedRegions.length + selectedEnglish.length + selectedAvailability.length;
     if (filterCount > 0) {
       posthog.capture('talent_filters_applied', {
@@ -181,6 +215,7 @@ const TalentSearch = () => {
     setSelectedRegions([]);
     setSelectedEnglish([]);
     setSelectedAvailability([]);
+    setQuery("");
     setPage(1);
   };
 

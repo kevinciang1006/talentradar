@@ -395,48 +395,270 @@ const seedDatabase = async (): Promise<void> => {
     })));
 
     // Create additional 88 talents to reach 100 total (12 detailed + 88 generic)
+    // Region-appropriate names for realistic demo data
+    const latinAmericaNames: [string, string, string, string][] = [
+      ['Sofia', 'Gutierrez', 'Colombia', 'Bogotá'], ['Andres', 'Lopez', 'Colombia', 'Medellín'],
+      ['Isabella', 'Martinez', 'Mexico', 'Guadalajara'], ['Diego', 'Ramirez', 'Argentina', 'Córdoba'],
+      ['Lucia', 'Fernandez', 'Chile', 'Valparaíso'], ['Sebastian', 'Torres', 'Colombia', 'Cali'],
+      ['Mariana', 'Sanchez', 'Mexico', 'Monterrey'], ['Gabriel', 'Castro', 'Argentina', 'Rosario'],
+      ['Paula', 'Vargas', 'Colombia', 'Barranquilla'], ['Nicolas', 'Rojas', 'Chile', 'Santiago'],
+      ['Andrea', 'Jimenez', 'Mexico', 'Puebla'], ['Mateo', 'Reyes', 'Colombia', 'Cartagena'],
+      ['Laura', 'Diaz', 'Argentina', 'Mendoza'], ['Felipe', 'Herrera', 'Chile', 'Concepción'],
+      ['Daniela', 'Ortiz', 'Mexico', 'Querétaro'], ['Alejandro', 'Moreno', 'Colombia', 'Bucaramanga'],
+      ['Natalia', 'Ruiz', 'Argentina', 'La Plata'], ['Santiago', 'Gomez', 'Mexico', 'Cancún'],
+      ['Camilo', 'Perez', 'Colombia', 'Pereira'], ['Juliana', 'Cruz', 'Chile', 'Antofagasta'],
+      ['Ricardo', 'Navarro', 'Mexico', 'Mérida'], ['Elena', 'Paredes', 'Colombia', 'Manizales'],
+      ['Emilia', 'Romero', 'Argentina', 'Tucumán'], ['Oscar', 'Acosta', 'Mexico', 'León'],
+      ['Valeria', 'Medina', 'Colombia', 'Santa Marta'], ['Bruno', 'Rios', 'Chile', 'Temuco'],
+      ['Ana', 'Castillo', 'Mexico', 'Tijuana'], ['Ivan', 'Delgado', 'Argentina', 'Salta'],
+      ['Gabriela', 'Pineda', 'Colombia', 'Ibagué'], ['Marco', 'Suarez', 'Mexico', 'Oaxaca'],
+      ['Carolina', 'Aguilar', 'Chile', 'Viña del Mar'], ['Rafael', 'Cardenas', 'Colombia', 'Villavicencio'],
+      ['Monica', 'Vega', 'Argentina', 'Mar del Plata'], ['Fernanda', 'Silva', 'Mexico', 'Toluca'],
+      ['Tomas', 'Mendoza', 'Colombia', 'Pasto'], ['Adriana', 'Guerrero', 'Chile', 'Iquique'],
+      ['Luis', 'Estrada', 'Mexico', 'Aguascalientes'], ['Catalina', 'Arias', 'Colombia', 'Cúcuta'],
+      ['Joaquin', 'Figueroa', 'Argentina', 'Santa Fe'], ['Rosa', 'Benitez', 'Mexico', 'San Luis Potosí'],
+      ['David', 'Cortes', 'Colombia', 'Neiva'], ['Carmen', 'Fuentes', 'Chile', 'Rancagua'],
+      ['Miguel', 'Parra', 'Mexico', 'Chihuahua'], ['Renata', 'Soto', 'Argentina', 'Neuquén'],
+      ['Jorge', 'Salazar', 'Colombia', 'Armenia'],
+    ];
+
+    const philippinesNames: [string, string][] = [
+      ['Maria Clara', 'Gonzales'], ['Jose', 'Reyes'], ['Christine', 'Bautista'],
+      ['Mark', 'Villanueva'], ['Michelle', 'Aquino'], ['Francis', 'Ramos'],
+      ['Jasmine', 'Garcia'], ['Kenneth', 'Mendoza'], ['Kathleen', 'Torres'],
+      ['Bryan', 'Santos'], ['Angelica', 'Cruz'], ['Patrick', 'Navarro'],
+      ['Rachel', 'Flores'], ['Christian', 'Rivera'], ['Nicole', 'Castillo'],
+      ['Angelo', 'Mercado'], ['Bianca', 'Soriano'], ['Jerome', 'De Leon'],
+      ['Samantha', 'Pascual'], ['Carlo', 'Manalo'], ['Denise', 'Tolentino'],
+      ['Ryan', 'Dizon'], ['Monica', 'Salazar'], ['Kevin', 'Aguilar'],
+      ['Trisha', 'Panganiban'], ['Aaron', 'Hernandez'], ['Janelle', 'Lorenzo'],
+      ['Daniel', 'Fernandez'], ['Grace', 'Concepcion'], ['Benedict', 'Lacson'],
+    ];
+
+    const southAfricaNames: [string, string][] = [
+      ['Naledi', 'Nkosi'], ['Sipho', 'Dlamini'], ['Zanele', 'Moyo'],
+      ['Liam', 'Botha'], ['Amahle', 'Khumalo'], ['Ethan', 'Kruger'],
+      ['Lindiwe', 'Ndlovu'], ['Ryan', 'Pretorius'], ['Nomsa', 'Mkhize'],
+      ['Dylan', 'Fourie'], ['Palesa', 'Mahlangu'], ['Craig', 'van Wyk'],
+      ['Thandiwe', 'Zulu'], ['Jason', 'Erasmus'], ['Lerato', 'Maseko'],
+    ];
+
+    const egyptNames: [string, string][] = [
+      ['Nour', 'Ibrahim'], ['Omar', 'Mostafa'], ['Mariam', 'Youssef'],
+      ['Karim', 'Abdelrahman'], ['Salma', 'Khalil'], ['Youssef', 'Fahmy'],
+      ['Hana', 'Samir'], ['Tarek', 'Naguib'], ['Dina', 'Soliman'],
+      ['Ali', 'Mansour'], ['Yasmin', 'Badawi'], ['Amr', 'Shafik'],
+      ['Layla', 'Tawfik'],
+    ];
+
+    const philippinesCities = ['Manila', 'Cebu', 'Davao', 'Quezon City', 'Makati', 'Taguig', 'Pasig', 'Iloilo', 'Bacolod', 'Clark'];
+    const southAfricaCities = ['Cape Town', 'Johannesburg', 'Durban', 'Pretoria', 'Port Elizabeth'];
+    const egyptCities = ['Cairo', 'Alexandria', 'Giza', 'Sharm El Sheikh', 'Mansoura'];
+
+    const rolePool: string[] = ['administrative', 'customer_support', 'sales', 'lead_generation', 'marketing', 'social_media', 'executive', 'bookkeeping_accounting'];
+    const headlinePool: Record<string, string[]> = {
+      administrative: ['Administrative Assistant | Inbox & Calendar Expert', 'Virtual Administrative Specialist | Process Optimization', 'Admin Support Professional | Organized & Detail-Oriented', 'Administrative Coordinator | Document & Data Management'],
+      customer_support: ['Customer Support Specialist | Live Chat & Email Expert', 'Customer Success Associate | SaaS Support Experience', 'Technical Support Rep | Zendesk & Freshdesk Pro', 'Customer Service Specialist | Bilingual Support'],
+      sales: ['Sales Development Rep | B2B SaaS Experience', 'Inside Sales Associate | CRM & Pipeline Expert', 'Business Development Rep | Cold Outreach Specialist'],
+      lead_generation: ['Lead Generation Specialist | LinkedIn & Apollo Expert', 'Outbound Prospector | Data-Driven Lead Gen'],
+      marketing: ['Digital Marketing Assistant | Email & Social Campaigns', 'Marketing Coordinator | Content & Analytics'],
+      social_media: ['Social Media Manager | Content Creation & Scheduling', 'Social Media Coordinator | Instagram & TikTok'],
+      executive: ['Executive Assistant | C-Suite Calendar & Travel Support', 'Senior EA | Project Coordination & Ops'],
+      bookkeeping_accounting: ['Bookkeeper | QuickBooks & Xero Certified', 'Accounting Assistant | AR/AP & Reconciliation'],
+    };
+    const skillsPool: Record<string, { name: string; proficiency: string }[]> = {
+      administrative: [{ name: 'Calendar Management', proficiency: 'expert' }, { name: 'Email Handling', proficiency: 'advanced' }, { name: 'Data Entry', proficiency: 'expert' }, { name: 'Travel Booking', proficiency: 'advanced' }],
+      customer_support: [{ name: 'Zendesk', proficiency: 'expert' }, { name: 'Live Chat', proficiency: 'advanced' }, { name: 'Ticket Management', proficiency: 'expert' }, { name: 'CRM Management', proficiency: 'advanced' }],
+      sales: [{ name: 'Cold Calling', proficiency: 'expert' }, { name: 'HubSpot CRM', proficiency: 'advanced' }, { name: 'Pipeline Management', proficiency: 'advanced' }, { name: 'Lead Qualification', proficiency: 'expert' }],
+      lead_generation: [{ name: 'Apollo.io', proficiency: 'expert' }, { name: 'LinkedIn Outreach', proficiency: 'advanced' }, { name: 'Cold Email', proficiency: 'advanced' }, { name: 'Data Mining', proficiency: 'expert' }],
+      marketing: [{ name: 'Email Marketing', proficiency: 'expert' }, { name: 'Google Analytics', proficiency: 'advanced' }, { name: 'Copywriting', proficiency: 'advanced' }, { name: 'Campaign Analysis', proficiency: 'expert' }],
+      social_media: [{ name: 'Content Creation', proficiency: 'expert' }, { name: 'Instagram', proficiency: 'advanced' }, { name: 'Canva', proficiency: 'expert' }, { name: 'Copywriting', proficiency: 'advanced' }],
+      executive: [{ name: 'Executive Scheduling', proficiency: 'expert' }, { name: 'Travel Booking', proficiency: 'expert' }, { name: 'Project Management', proficiency: 'advanced' }, { name: 'Stakeholder Communication', proficiency: 'advanced' }],
+      bookkeeping_accounting: [{ name: 'QuickBooks', proficiency: 'expert' }, { name: 'Xero', proficiency: 'advanced' }, { name: 'Financial Reporting', proficiency: 'advanced' }, { name: 'Bank Reconciliation', proficiency: 'expert' }],
+    };
+    const toolsPool: Record<string, string[]> = {
+      administrative: ['Google Workspace', 'Slack', 'Notion', 'Asana', 'Calendly', 'Microsoft Office'],
+      customer_support: ['Zendesk', 'Intercom', 'Freshdesk', 'Slack', 'HubSpot', 'Loom'],
+      sales: ['HubSpot', 'Salesforce', 'LinkedIn Sales Navigator', 'Outreach.io', 'ZoomInfo'],
+      lead_generation: ['Apollo.io', 'LinkedIn Sales Navigator', 'Hunter.io', 'Lemlist', 'Google Sheets'],
+      marketing: ['Mailchimp', 'HubSpot', 'Google Analytics', 'Facebook Ads Manager', 'Canva'],
+      social_media: ['Canva', 'Later', 'Hootsuite', 'Buffer', 'CapCut', 'Adobe Creative Suite'],
+      executive: ['Google Workspace', 'Notion', 'Asana', 'Monday.com', 'DocuSign', 'Calendly'],
+      bookkeeping_accounting: ['QuickBooks', 'Xero', 'Excel', 'Google Sheets', 'FreshBooks'],
+    };
+    const bioPool: Record<string, string[]> = {
+      administrative: [
+        'Organized and proactive administrative professional with experience supporting busy teams and executives. Skilled in calendar management, email triage, data entry, and document preparation. Known for reliability and clear communication.',
+        'Efficient virtual assistant with a track record of streamlining office operations for remote teams. Proficient in Google Workspace, Notion, and project management tools. Detail-oriented with excellent follow-through.',
+      ],
+      customer_support: [
+        'Customer-focused support specialist experienced in handling multi-channel inquiries via email, live chat, and phone. Consistently maintain high CSAT scores through empathetic problem-solving and clear communication.',
+        'Dedicated support professional with experience in SaaS and e-commerce environments. Strong troubleshooting skills and ability to de-escalate situations while maintaining a positive customer experience.',
+      ],
+      sales: [
+        'Results-oriented sales development representative with experience in B2B lead generation and cold outreach. Skilled at building rapport, qualifying prospects, and managing CRM pipelines to drive revenue growth.',
+        'Motivated SDR with a passion for connecting businesses with solutions. Experienced in cold calling, email campaigns, and LinkedIn outreach with proven track record of exceeding quotas.',
+      ],
+      lead_generation: [
+        'Data-driven lead generation specialist experienced in building targeted prospect lists and executing multi-channel outreach campaigns. Proficient in Apollo.io, LinkedIn Sales Navigator, and various enrichment tools.',
+        'Strategic prospecting professional who combines research skills with outreach expertise to deliver qualified leads consistently. Strong analytical abilities and attention to data quality.',
+      ],
+      marketing: [
+        'Creative digital marketing professional experienced in email campaigns, social media advertising, and content creation. Data-informed approach to campaign optimization with strong copywriting skills.',
+        'Marketing coordinator with hands-on experience managing campaigns across email, social, and paid channels. Skilled at turning analytics into actionable insights that drive growth.',
+      ],
+      social_media: [
+        'Creative social media manager with experience growing brand presence across Instagram, TikTok, and LinkedIn. Skilled in content creation, community management, and performance analytics.',
+        'Social media strategist who combines creative content with data-driven decisions. Experienced in managing multiple accounts and creating engaging content calendars.',
+      ],
+      executive: [
+        'Highly organized executive assistant with experience supporting C-level leaders in fast-paced environments. Expert in complex scheduling, travel coordination, and stakeholder communication across time zones.',
+        'Reliable EA with strong project management skills and ability to handle confidential matters with discretion. Experienced in board meeting preparation and cross-functional coordination.',
+      ],
+      bookkeeping_accounting: [
+        'Detail-oriented bookkeeper experienced in managing financial records using QuickBooks and Xero. Skilled in invoicing, bank reconciliation, accounts payable/receivable, and monthly reporting.',
+        'Accounting professional with experience supporting small businesses with their financial operations. Proficient in cloud accounting software and committed to accuracy and timely reporting.',
+      ],
+    };
+
     const additionalTalents = [];
-    for (let i = 0; i < 88; i++) {
+    let talentIndex = 0;
+    // Latin America: 45 talents
+    for (let i = 0; i < 45; i++) {
+      const [firstName, lastName, country, city] = latinAmericaNames[i];
+      const tz = country === 'Argentina' ? 'America/Argentina/Buenos_Aires' : country === 'Chile' ? 'America/Santiago' : country === 'Mexico' ? 'America/Mexico_City' : 'America/Bogota';
+      const utc = country === 'Argentina' ? -3 : country === 'Chile' ? -3 : country === 'Mexico' ? -6 : -5;
+      const role = rolePool[talentIndex % rolePool.length];
+      const headlines = headlinePool[role];
       additionalTalents.push({
-        firstName: `Talent${i}`,
-        lastName: `User${i}`,
-        email: `talent${i}@example.com`,
-        avatar: `https://api.dicebear.com/7.x/initials/svg?seed=Talent${i}User${i}`,
-        region: i < 45 ? 'latin_america' : i < 75 ? 'philippines' : i < 90 ? 'south_africa' : 'egypt',
-        country: i < 45 ? 'Colombia' : i < 75 ? 'Philippines' : i < 90 ? 'South Africa' : 'Egypt',
-        city: i < 45 ? 'Bogotá' : i < 75 ? 'Manila' : i < 90 ? 'Cape Town' : 'Cairo',
-        timezone: i < 45 ? 'America/Bogota' : i < 75 ? 'Asia/Manila' : i < 90 ? 'Africa/Johannesburg' : 'Africa/Cairo',
-        utcOffset: i < 45 ? -5 : i < 75 ? 8 : i < 90 ? 2 : 2,
-        headline: `Professional ${i % 2 === 0 ? 'Administrative' : 'Customer Support'} Specialist`,
-        bio: 'Experienced professional with strong background in remote work. Dedicated to delivering high-quality results and excellent communication. Proven track record in supporting teams and achieving goals.',
-        roleCategories: [i % 2 === 0 ? 'administrative' : 'customer_support'],
+        firstName, lastName, email: `${firstName.toLowerCase().replace(/\s+/g, '')}.${lastName.toLowerCase().replace(/\s+/g, '')}@example.com`,
+        avatar: `https://api.dicebear.com/7.x/initials/svg?seed=${firstName}${lastName}`,
+        region: 'latin_america', country, city, timezone: tz, utcOffset: utc,
+        headline: headlines[talentIndex % headlines.length],
+        bio: bioPool[role][talentIndex % bioPool[role].length],
+        roleCategories: [role],
         hourlyRate: 6 + Math.floor(Math.random() * 7),
         yearsOfExperience: 2 + Math.floor(Math.random() * 6),
-        englishProficiency: ['fluent', 'advanced', 'native'][Math.floor(Math.random() * 3)] as 'fluent' | 'advanced' | 'native',
-        availability: Math.random() > 0.35 ? 'full_time' : 'part_time',
+        englishProficiency: (['fluent', 'advanced', 'native'] as const)[Math.floor(Math.random() * 3)],
+        availability: Math.random() > 0.35 ? 'full_time' as const : 'part_time' as const,
         isImmediatelyAvailable: Math.random() > 0.6,
         weeklyHours: Math.random() > 0.35 ? 40 : 20,
-        skills: [
-          { name: 'Communication', proficiency: 'expert' },
-          { name: 'Time Management', proficiency: 'advanced' },
-        ],
-        tools: ['Google Workspace', 'Slack'],
-        experience: [
-          { title: 'Virtual Assistant', company: 'Remote Company', startDate: '2020-01', endDate: null, description: 'Providing administrative support remotely.' },
-        ],
-        education: [{ degree: 'Bachelor\'s Degree', institution: 'University', year: 2019 }],
-        languages: [{ name: 'English', proficiency: 'fluent' }],
+        skills: skillsPool[role],
+        tools: toolsPool[role],
+        experience: [{ title: headlines[talentIndex % headlines.length].split(' | ')[0], company: 'Remote Company', startDate: `${2019 + Math.floor(Math.random() * 4)}-0${1 + Math.floor(Math.random() * 9)}`, endDate: null, description: bioPool[role][0].slice(0, 120) + '.' }],
+        education: [{ degree: 'Bachelor\'s Degree', institution: `Universidad de ${city}`, year: 2015 + Math.floor(Math.random() * 6) }],
+        languages: [{ name: 'Spanish', proficiency: 'native' }, { name: 'English', proficiency: (['fluent', 'advanced'] as const)[Math.floor(Math.random() * 2)] }],
         vettingReport: {
           englishScore: 3.5 + Math.random() * 1.5,
-          skillsAssessmentPassed: true,
-          backgroundVerified: true,
-          remoteWorkHistoryConfirmed: true,
-          referenceChecked: true,
+          skillsAssessmentPassed: true, backgroundVerified: true, remoteWorkHistoryConfirmed: true, referenceChecked: true,
           rlRating: Math.random() > 0.5 ? 'Top 5%' : 'Top 10%',
           vettedDate: randomDate(new Date('2023-01-01'), new Date('2024-12-01')),
         },
         status: 'active',
       });
+      talentIndex++;
+    }
+    // Philippines: 30 talents
+    for (let i = 0; i < 30; i++) {
+      const [firstName, lastName] = philippinesNames[i];
+      const city = philippinesCities[i % philippinesCities.length];
+      const role = rolePool[talentIndex % rolePool.length];
+      const headlines = headlinePool[role];
+      additionalTalents.push({
+        firstName, lastName, email: `${firstName.toLowerCase().replace(/\s+/g, '')}.${lastName.toLowerCase().replace(/\s+/g, '')}@example.com`,
+        avatar: `https://api.dicebear.com/7.x/initials/svg?seed=${firstName}${lastName}`,
+        region: 'philippines', country: 'Philippines', city, timezone: 'Asia/Manila', utcOffset: 8,
+        headline: headlines[talentIndex % headlines.length],
+        bio: bioPool[role][talentIndex % bioPool[role].length],
+        roleCategories: [role],
+        hourlyRate: 6 + Math.floor(Math.random() * 7),
+        yearsOfExperience: 2 + Math.floor(Math.random() * 6),
+        englishProficiency: (['fluent', 'advanced', 'native'] as const)[Math.floor(Math.random() * 3)],
+        availability: Math.random() > 0.35 ? 'full_time' as const : 'part_time' as const,
+        isImmediatelyAvailable: Math.random() > 0.6,
+        weeklyHours: Math.random() > 0.35 ? 40 : 20,
+        skills: skillsPool[role],
+        tools: toolsPool[role],
+        experience: [{ title: headlines[talentIndex % headlines.length].split(' | ')[0], company: 'Remote Company', startDate: `${2019 + Math.floor(Math.random() * 4)}-0${1 + Math.floor(Math.random() * 9)}`, endDate: null, description: bioPool[role][0].slice(0, 120) + '.' }],
+        education: [{ degree: 'Bachelor\'s Degree', institution: `University of ${city}`, year: 2015 + Math.floor(Math.random() * 6) }],
+        languages: [{ name: 'English', proficiency: (['fluent', 'native'] as const)[Math.floor(Math.random() * 2)] }, { name: 'Filipino', proficiency: 'native' }],
+        vettingReport: {
+          englishScore: 3.5 + Math.random() * 1.5,
+          skillsAssessmentPassed: true, backgroundVerified: true, remoteWorkHistoryConfirmed: true, referenceChecked: true,
+          rlRating: Math.random() > 0.5 ? 'Top 5%' : 'Top 10%',
+          vettedDate: randomDate(new Date('2023-01-01'), new Date('2024-12-01')),
+        },
+        status: 'active',
+      });
+      talentIndex++;
+    }
+    // South Africa: 10 talents (indices 75-84 originally, but now we use 15 names for 10)
+    for (let i = 0; i < 10; i++) {
+      const [firstName, lastName] = southAfricaNames[i];
+      const city = southAfricaCities[i % southAfricaCities.length];
+      const role = rolePool[talentIndex % rolePool.length];
+      const headlines = headlinePool[role];
+      additionalTalents.push({
+        firstName, lastName, email: `${firstName.toLowerCase().replace(/\s+/g, '')}.${lastName.toLowerCase().replace(/\s+/g, '')}@example.com`,
+        avatar: `https://api.dicebear.com/7.x/initials/svg?seed=${firstName}${lastName}`,
+        region: 'south_africa', country: 'South Africa', city, timezone: 'Africa/Johannesburg', utcOffset: 2,
+        headline: headlines[talentIndex % headlines.length],
+        bio: bioPool[role][talentIndex % bioPool[role].length],
+        roleCategories: [role],
+        hourlyRate: 6 + Math.floor(Math.random() * 7),
+        yearsOfExperience: 2 + Math.floor(Math.random() * 6),
+        englishProficiency: (['fluent', 'advanced', 'native'] as const)[Math.floor(Math.random() * 3)],
+        availability: Math.random() > 0.35 ? 'full_time' as const : 'part_time' as const,
+        isImmediatelyAvailable: Math.random() > 0.6,
+        weeklyHours: Math.random() > 0.35 ? 40 : 20,
+        skills: skillsPool[role],
+        tools: toolsPool[role],
+        experience: [{ title: headlines[talentIndex % headlines.length].split(' | ')[0], company: 'Remote Company', startDate: `${2019 + Math.floor(Math.random() * 4)}-0${1 + Math.floor(Math.random() * 9)}`, endDate: null, description: bioPool[role][0].slice(0, 120) + '.' }],
+        education: [{ degree: 'Bachelor\'s Degree', institution: `University of ${city}`, year: 2015 + Math.floor(Math.random() * 6) }],
+        languages: [{ name: 'English', proficiency: 'native' }, { name: 'Afrikaans', proficiency: (['fluent', 'native'] as const)[Math.floor(Math.random() * 2)] }],
+        vettingReport: {
+          englishScore: 4.0 + Math.random(),
+          skillsAssessmentPassed: true, backgroundVerified: true, remoteWorkHistoryConfirmed: true, referenceChecked: true,
+          rlRating: Math.random() > 0.5 ? 'Top 5%' : 'Top 10%',
+          vettedDate: randomDate(new Date('2023-01-01'), new Date('2024-12-01')),
+        },
+        status: 'active',
+      });
+      talentIndex++;
+    }
+    // Egypt: 3 talents (to reach 88 additional = 100 total)
+    for (let i = 0; i < 3; i++) {
+      const [firstName, lastName] = egyptNames[i];
+      const city = egyptCities[i % egyptCities.length];
+      const role = rolePool[talentIndex % rolePool.length];
+      const headlines = headlinePool[role];
+      additionalTalents.push({
+        firstName, lastName, email: `${firstName.toLowerCase().replace(/\s+/g, '')}.${lastName.toLowerCase().replace(/\s+/g, '')}@example.com`,
+        avatar: `https://api.dicebear.com/7.x/initials/svg?seed=${firstName}${lastName}`,
+        region: 'egypt', country: 'Egypt', city, timezone: 'Africa/Cairo', utcOffset: 2,
+        headline: headlines[talentIndex % headlines.length],
+        bio: bioPool[role][talentIndex % bioPool[role].length],
+        roleCategories: [role],
+        hourlyRate: 6 + Math.floor(Math.random() * 7),
+        yearsOfExperience: 2 + Math.floor(Math.random() * 6),
+        englishProficiency: (['fluent', 'advanced'] as const)[Math.floor(Math.random() * 2)],
+        availability: Math.random() > 0.35 ? 'full_time' as const : 'part_time' as const,
+        isImmediatelyAvailable: Math.random() > 0.6,
+        weeklyHours: Math.random() > 0.35 ? 40 : 20,
+        skills: skillsPool[role],
+        tools: toolsPool[role],
+        experience: [{ title: headlines[talentIndex % headlines.length].split(' | ')[0], company: 'Remote Company', startDate: `${2019 + Math.floor(Math.random() * 4)}-0${1 + Math.floor(Math.random() * 9)}`, endDate: null, description: bioPool[role][0].slice(0, 120) + '.' }],
+        education: [{ degree: 'Bachelor\'s Degree', institution: `University of ${city}`, year: 2015 + Math.floor(Math.random() * 6) }],
+        languages: [{ name: 'Arabic', proficiency: 'native' }, { name: 'English', proficiency: (['fluent', 'advanced'] as const)[Math.floor(Math.random() * 2)] }],
+        vettingReport: {
+          englishScore: 3.5 + Math.random() * 1.5,
+          skillsAssessmentPassed: true, backgroundVerified: true, remoteWorkHistoryConfirmed: true, referenceChecked: true,
+          rlRating: Math.random() > 0.5 ? 'Top 5%' : 'Top 10%',
+          vettedDate: randomDate(new Date('2023-01-01'), new Date('2024-12-01')),
+        },
+        status: 'active',
+      });
+      talentIndex++;
     }
 
     const moreTalents = await Talent.create(additionalTalents);
@@ -558,7 +780,7 @@ const seedDatabase = async (): Promise<void> => {
         { from: 'screening', to: 'interview', changedAt: new Date('2024-12-01'), changedBy: 'company' },
       ],
       interview: {
-        scheduledAt: new Date('2024-12-25T15:00:00Z'),
+        scheduledAt: new Date('2026-04-25T15:00:00Z'),
         candidateTimezone: 'America/Bogota',
         meetingLink: 'https://zoom.us/j/123456789',
         status: 'scheduled',
