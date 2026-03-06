@@ -123,12 +123,12 @@ interface Deal {
 
 const defaultFinalizing: FinalizingState = {
   invoiceGenerated: false, invoiceAmount: "2500.00", invoiceDescription: "One-time placement fee", invoiceId: "", invoiceFile: null,
-  paymentReceived: false, paymentMethod: "", paymentRef: "",
+  paymentReceived: false, paymentMethod: "stripe", paymentRef: "stripe_ch_demo_2025",
   contractGenerated: false, contractId: "", contractFile: null, sentToClient: false, sentToCandidate: false, clientSigned: false, candidateSigned: false, contractFullySigned: false,
-  payrollPartner: "", payrollRef: "", payrollBankDetails: false, payrollSchedule: false, payrollFirstPay: "2025-02-01", payrollNotes: "", payrollComplete: false,
-  complianceTax: false, complianceLabor: false, compliancePrivacy: false, complianceNotes: "", complianceVerified: false, complianceFile: null,
-  csmName: "", csmAssigned: false,
-  startCandidateConfirmed: false, startClientConfirmed: false, startNotes: "", startDateConfirmed: false,
+  payrollPartner: "rl_partner", payrollRef: "PAY-2025-001", payrollBankDetails: true, payrollSchedule: true, payrollFirstPay: "2025-02-01", payrollNotes: "Profile created in payroll system. Contractor classification confirmed. Bi-weekly schedule configured.", payrollComplete: false,
+  complianceTax: true, complianceLabor: true, compliancePrivacy: true, complianceNotes: "Independent contractor classification verified for country of residence.", complianceVerified: false, complianceFile: null,
+  csmName: "Paula Martinez", csmAssigned: false,
+  startCandidateConfirmed: false, startClientConfirmed: false, startNotes: "All onboarding materials sent. Candidate confirmed availability.", startDateConfirmed: false,
 };
 
 const initialDeals: Deal[] = [
@@ -318,17 +318,17 @@ const AdminDeals = () => {
 
   // Flag issue form
   const [showFlagForm, setShowFlagForm] = useState(false);
-  const [flagType, setFlagType] = useState("");
-  const [flagDetails, setFlagDetails] = useState("");
+  const [flagType, setFlagType] = useState("rate_below_market");
+  const [flagDetails, setFlagDetails] = useState("The offered rate is below the market range for this region and role.");
 
   // Negotiating form
-  const [counterRateInput, setCounterRateInput] = useState("");
+  const [counterRateInput, setCounterRateInput] = useState("10");
   const [counterHoursInput, setCounterHoursInput] = useState("40");
-  const [counterMsgInput, setCounterMsgInput] = useState("");
+  const [counterMsgInput, setCounterMsgInput] = useState("I appreciate the offer but was hoping for a rate closer to $10/hr given my experience.");
 
   // Decline form
-  const [declineReason, setDeclineReason] = useState("");
-  const [declineNotes, setDeclineNotes] = useState("");
+  const [declineReason, setDeclineReason] = useState("Rate too low");
+  const [declineNotes, setDeclineNotes] = useState("Candidate found another position with better compensation.");
   const [showDeclineForm, setShowDeclineForm] = useState(false);
   const [showNegotiateForm, setShowNegotiateForm] = useState(false);
 

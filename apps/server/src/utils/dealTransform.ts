@@ -252,7 +252,7 @@ export function isFinalizationComplete(finalization: Finalization | undefined): 
     finalization.payroll?.status === 'complete',
     finalization.compliance?.status === 'verified',
     finalization.csm?.status === 'assigned',
-    finalization.startDate?.status === 'confirmed',
+    // finalization.startDate?.status === 'confirmed',
   ];
 
   return checks.every(check => check === true);
@@ -272,7 +272,7 @@ export function getIncompleteSteps(finalization: Finalization | undefined): stri
   if (finalization.payroll?.status !== 'complete') steps.push('Payroll');
   if (finalization.compliance?.status !== 'verified') steps.push('Compliance');
   if (finalization.csm?.status !== 'assigned') steps.push('CSM Assignment');
-  if (finalization.startDate?.status !== 'confirmed') steps.push('Start Date');
+  // if (finalization.startDate?.status !== 'confirmed') steps.push('Start Date');
 
   return steps;
 }

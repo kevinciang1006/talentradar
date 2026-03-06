@@ -81,7 +81,7 @@ const InterviewDetailsSchema = new Schema<InterviewDetails>({
     enum: ['scheduled', 'completed', 'no_show', 'cancelled'] as InterviewStatus[],
     required: true,
   },
-  notes: { type: String, required: true },
+  notes: { type: String, required: false },
   completedAt: { type: Date },
 }, { _id: false });
 

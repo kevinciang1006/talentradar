@@ -83,27 +83,27 @@ export const SlideOverPanel = ({
 
   // Screening task form
   const [showTaskForm, setShowTaskForm] = useState(false);
-  const [taskTitle, setTaskTitle] = useState("");
-  const [taskDesc, setTaskDesc] = useState("");
-  const [taskDue, setTaskDue] = useState("");
-  const [taskLink, setTaskLink] = useState("");
-  const [submissionLink, setSubmissionLink] = useState("");
+  const [taskTitle, setTaskTitle] = useState("Organize sample calendar for Q1 2025");
+  const [taskDesc, setTaskDesc] = useState("Please organize the attached calendar with proper priorities and color coding. Include recurring meetings and deadlines.");
+  const [taskDue, setTaskDue] = useState("2026-03-20T17:00");
+  const [taskLink, setTaskLink] = useState("https://forms.gle/p3yyrv5YprBWSSju7");
+  const [submissionLink, setSubmissionLink] = useState("https://docs.google.com/spreadsheets/d/example");
 
   // Interview form
-  const [intDateTime, setIntDateTime] = useState("");
+  const [intDateTime, setIntDateTime] = useState("2026-03-18T14:00");
   const [intTimezone, setIntTimezone] = useState("America/New_York");
-  const [intLink, setIntLink] = useState("");
-  const [intNotes, setIntNotes] = useState("");
+  const [intLink, setIntLink] = useState("https://zoom.us/j/1234567890");
+  const [intNotes, setIntNotes] = useState("Looking forward to discussing your experience with calendar management and scheduling.");
 
   // Offer form
   const [offRate, setOffRate] = useState(String(talent.hourlyRate || ""));
   const [offHours, setOffHours] = useState("40");
   const [offType, setOffType] = useState("full_time");
-  const [offStart, setOffStart] = useState("");
-  const [offMsg, setOffMsg] = useState("");
+  const [offStart, setOffStart] = useState("2026-04-01T09:00");
+  const [offMsg, setOffMsg] = useState("Hi, we were impressed with your interview and would love to have you join our team!");
 
   // Interview notes
-  const [interviewNotesText, setInterviewNotesText] = useState("");
+  const [interviewNotesText, setInterviewNotesText] = useState("Great communication skills. Strong organizational background. Recommended for offer.");
 
   // Payment modal
   const [showPaymentModal, setShowPaymentModal] = useState(false);
@@ -119,15 +119,15 @@ export const SlideOverPanel = ({
   // Reject modal
   const [showRejectModal, setShowRejectModal] = useState(false);
   const [rejectReason, setRejectReason] = useState("skills_mismatch");
-  const [rejectNotes, setRejectNotes] = useState("");
+  const [rejectNotes, setRejectNotes] = useState("Candidate's skills don't align with our current needs for this role.");
 
   // Negotiation state
   const [showReviseForm, setShowReviseForm] = useState(false);
   const [reviseRate, setReviseRate] = useState("");
   const [reviseHours, setReviseHours] = useState("");
-  const [reviseMessage, setReviseMessage] = useState("");
+  const [reviseMessage, setReviseMessage] = useState("Thank you for the counter-offer. We've adjusted our rate to better align with your expectations.");
   const [showDeclineCounterForm, setShowDeclineCounterForm] = useState(false);
-  const [declineCounterReason, setDeclineCounterReason] = useState("");
+  const [declineCounterReason, setDeclineCounterReason] = useState("Unfortunately, the counter-offer exceeds our budget for this role.");
 
   const currentIdx = stageOrder.indexOf(entry.stage as any);
 
