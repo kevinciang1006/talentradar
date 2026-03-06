@@ -22,6 +22,7 @@ export type AddNoteInput = z.infer<typeof addNoteSchema>;
 
 export const assignScreeningTaskSchema = z.object({
   title: z.string().min(1, 'Title is required'),
+  description: z.string().optional().default(''),
   dueDate: z.string().datetime('Invalid date format'),
   taskLink: z.string().url('Invalid task link URL').optional().or(z.literal('')),
   submissionLink: z.string().url('Invalid submission link URL').optional().or(z.literal('')),
