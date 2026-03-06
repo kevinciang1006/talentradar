@@ -358,11 +358,10 @@ This project is built for demonstration purposes as part of a job application.
 
 ## 📧 Contact
 
-Built by [Your Name] for Remote Leverage
+Built by Kevin for Remote Leverage
 
-- Portfolio: [your-portfolio.com]
-- LinkedIn: [your-linkedin]
-- Email: [your-email@example.com]
+- LinkedIn: [https://www.linkedin.com/in/kevinciang1006/]
+- Email: [kevinciang1006@gmail.com]
 
 ---
 
