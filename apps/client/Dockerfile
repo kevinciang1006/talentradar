@@ -24,9 +24,15 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-# Build argument for API URL
+# Build arguments for environment variables
 ARG VITE_API_URL
+ARG VITE_PUBLIC_POSTHOG_KEY
+ARG VITE_PUBLIC_POSTHOG_HOST
+
+# Set environment variables for Vite build
 ENV VITE_API_URL=${VITE_API_URL}
+ENV VITE_PUBLIC_POSTHOG_KEY=${VITE_PUBLIC_POSTHOG_KEY}
+ENV VITE_PUBLIC_POSTHOG_HOST=${VITE_PUBLIC_POSTHOG_HOST}
 
 # Copy pruned lockfile and package.json files
 COPY --from=pruner /app/out/json/ .

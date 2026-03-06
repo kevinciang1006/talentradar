@@ -174,11 +174,13 @@ jobs:
           # Get backend URL from previous job
           BACKEND_URL="${{ needs.deploy-backend.outputs.url }}"
 
-          # Build with backend URL as build arg from repo root
+          # Build with all environment variables as build args
           IMAGE_NAME="${{ env.GCP_REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/talentradar-frontend/frontend:${{ github.sha }}"
           docker build \
             -f apps/client/Dockerfile \
             --build-arg VITE_API_URL="${BACKEND_URL}/api/v1" \
+            --build-arg VITE_PUBLIC_POSTHOG_KEY="${{ secrets.VITE_PUBLIC_POSTHOG_KEY }}" \
+            --build-arg VITE_PUBLIC_POSTHOG_HOST="${{ secrets.VITE_PUBLIC_POSTHOG_HOST }}" \
             -t "${IMAGE_NAME}" .
           docker push "${IMAGE_NAME}"
 
